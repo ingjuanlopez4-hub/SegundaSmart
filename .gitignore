@@ -13,3 +13,5 @@ graphify-out/
 artifacts/
 .playwright-mcp/
 .impeccable/questions/
+.vercel/
+.env.local

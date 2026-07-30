@@ -10,11 +10,15 @@
     "typecheck": "tsc --noEmit",
     "test": "DATABASE_URL=file:./test.db prisma db push --skip-generate && DATABASE_URL=file:./test.db vitest run",
     "db:push": "prisma db push",
-    "db:generate": "prisma generate"
+    "db:generate": "prisma generate",
+    "db:init:turso": "node --env-file=.env.local scripts/init-turso.mjs"
   },
   "dependencies": {
+    "@libsql/client": "0.8.1",
+    "@prisma/adapter-libsql": "6.12.0",
     "@prisma/client": "6.12.0",
-    "next": "15.4.4",
+    "@vercel/blob": "2.6.1",
+    "next": "15.5.22",
     "qrcode": "1.5.4",
     "react": "19.1.0",
     "react-dom": "19.1.0",
@@ -27,9 +31,9 @@
     "@types/react": "19.1.8",
     "@types/react-dom": "19.1.6",
     "eslint": "9.31.0",
-    "eslint-config-next": "15.4.4",
+    "eslint-config-next": "15.5.22",
     "prisma": "6.12.0",
     "typescript": "5.8.3",
-    "vitest": "3.2.4"
+    "vitest": "3.2.7"
   }
 }

@@ -39,16 +39,19 @@ Abre [http://localhost:3000](http://localhost:3000), crea una cuenta y registra 
 | --- | --- | --- |
 | `DATABASE_URL` | Sí | SQLite local; el valor recomendado es `file:./dev.db`. |
 | `APP_URL` | Sí en producción | URL absoluta incluida en los códigos QR. |
+| `TURSO_DATABASE_URL` | En Vercel | Activa Prisma sobre la base SQLite persistente de Turso. |
+| `TURSO_AUTH_TOKEN` | En Vercel | Credencial privada de Turso. |
+| `BLOB_READ_WRITE_TOKEN` | En Vercel | Guarda fotografías en Vercel Blob. |
 | `OPENAI_API_KEY` | No | Activa sugerencias con OpenAI. Nunca se envía al navegador. |
 | `OPENAI_MODEL` | No | Modelo de chat; por defecto `gpt-4o-mini`. |
 
 `.env.example` no contiene secretos. `.env` y las bases SQLite están ignoradas por Git.
 
-## Fotos y limitación de despliegue
+## Persistencia local y serverless
 
-Las fotos se validan en backend (tipo permitido, firma binaria y máximo 5 MB) y se guardan realmente en `public/uploads/<businessId>`. Esto permite operar sin servicios externos en una máquina local o servidor con disco persistente.
+Las fotos se validan en backend (tipo permitido, firma binaria y máximo 5 MB). En desarrollo se guardan en `public/uploads/<businessId>`; cuando existe `BLOB_READ_WRITE_TOKEN`, se guardan en Vercel Blob y `photoPath` conserva la URL pública.
 
-**Limitación real:** el almacenamiento local no es adecuado para despliegues serverless, réplicas múltiples ni archivos que deban sobrevivir una imagen de contenedor efímera. Para esos entornos debe sustituirse por almacenamiento de objetos persistente, conservando en `photoPath` la URL resultante. Las copias de seguridad deben incluir tanto `prisma/dev.db` como `public/uploads`.
+Prisma usa SQLite local cuando no existe `TURSO_DATABASE_URL` y cambia al adaptador libSQL de Turso en Vercel. El esquema remoto inicial se aplica una vez con `npm run db:init:turso` después de ejecutar `vercel env pull .env.local`.
 
 ## Seguridad e integridad
 
@@ -81,4 +84,14 @@ Las pruebas crean `prisma/test.db` y limpian únicamente esa base. Cubren import
 
 ## Operación
 
-No se incluye una migración inicial porque este MVP parte de una base nueva; `npm run db:push` crea el esquema local. Antes de desplegar una evolución con datos reales, genera y revisa migraciones Prisma. Configura HTTPS, una política de respaldo para base/fotos y un volumen persistente.
+`npm run db:push` crea o actualiza la base SQLite local. La migración inicial versionada en `prisma/migrations` permite inicializar Turso con `npm run db:init:turso`. Antes de cambiar un esquema con datos reales, genera y revisa una nueva migración y conserva respaldos de la base y del almacén Blob.
+
+El despliegue Vercel requiere enlazar un recurso Turso y un almacén Blob públicos. Los recursos pueden crearse con Vercel CLI:
+
+```bash
+vercel integration add tursocloud/database --name segunda-smart-db
+vercel blob create-store segunda-smart-photos --access public --region iad1 --yes
+vercel env pull .env.local
+npm run db:init:turso
+vercel --prod
+```

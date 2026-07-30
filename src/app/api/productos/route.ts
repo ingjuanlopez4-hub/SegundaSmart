@@ -1,8 +1,7 @@
-import { mkdir, unlink, writeFile } from "node:fs/promises";
-import path from "node:path";
 import { requireApiUser } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { apiError, handleApiError } from "@/lib/http";
+import { storeProductPhoto } from "@/lib/photo-storage";
 import { productSchema } from "@/lib/validation";
 
 export const runtime = "nodejs";
@@ -17,7 +16,7 @@ function hasValidSignature(bytes: Uint8Array, type: keyof typeof imageTypes) {
 export async function POST(request: Request) {
   const user = await requireApiUser();
   if (!user) return apiError("Inicia sesión para continuar", 401);
-  let savedPath: string | null = null;
+  let removeSavedPhoto: (() => Promise<void>) | null = null;
   try {
     const form = await request.formData();
     const photo = form.get("photo");
@@ -31,20 +30,17 @@ export async function POST(request: Request) {
       name: form.get("name"), category: form.get("category"), condition: form.get("condition"),
       description: form.get("description"), cost: form.get("cost"), price: form.get("price"), suggestedPrice: form.get("suggestedPrice") ?? "",
     });
-    const directory = path.join(process.cwd(), "public", "uploads", user.businessId);
-    await mkdir(directory, { recursive: true });
-    const filename = `${crypto.randomUUID()}.${imageTypes[mime]}`;
-    savedPath = path.join(directory, filename);
-    await writeFile(savedPath, bytes, { flag: "wx" });
+    const photoStorage = await storeProductPhoto(user.businessId, bytes, imageTypes[mime]);
+    removeSavedPhoto = photoStorage.remove;
     const product = await db.product.create({ data: {
       businessId: user.businessId, name: input.name, category: input.category, condition: input.condition,
       description: input.description, costCents: input.cost, priceCents: input.price,
       suggestedCents: typeof input.suggestedPrice === "number" ? input.suggestedPrice : null,
-      photoPath: `/uploads/${user.businessId}/${filename}`,
+      photoPath: photoStorage.url,
     } });
     return Response.json({ id: product.id }, { status: 201 });
   } catch (error) {
-    if (savedPath) await unlink(savedPath).catch(() => undefined);
+    if (removeSavedPhoto) await removeSavedPhoto().catch(() => undefined);
     return handleApiError(error);
   }
 }

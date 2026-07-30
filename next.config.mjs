@@ -2,6 +2,9 @@
 const nextConfig = {
   experimental: { serverActions: { bodySizeLimit: "6mb" } },
   outputFileTracingRoot: process.cwd(),
+  images: {
+    remotePatterns: [{ protocol: "https", hostname: "*.public.blob.vercel-storage.com" }],
+  },
 };
 
 export default nextConfig;
