@@ -52,9 +52,11 @@ model Product {
   id             String        @id @default(cuid())
   businessId     String
   business       Business      @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  reference      String
   name           String
   category       String
   condition      String
+  defects        String?
   description    String
   photoPath      String
   costCents      Int
@@ -67,6 +69,7 @@ model Product {
 
   @@index([businessId, status])
   @@index([businessId, createdAt])
+  @@unique([businessId, reference])
 }
 
 model Sale {

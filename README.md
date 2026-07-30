@@ -20,6 +20,12 @@ MVP local para que negocios de artículos de segunda mano administren piezas ún
 - Navegación con ruta activa, acceso móvil permanente al catálogo y cierre de sesión, confirmación visible después de registrar una pieza y confirmación previa al cerrar una venta.
 - Diseño mobile first con foco visible, objetivos táctiles, movimiento reducido y estados de carga, error, vacío y éxito.
 
+## Documentación de producto
+
+- [`PRODUCT.md`](PRODUCT.md): usuarios, posicionamiento, principios y límites del producto.
+- [`DESIGN.md`](DESIGN.md): sistema visual y reglas de interacción responsive.
+- [`COMPETITIVE_ANALYSIS.md`](COMPETITIVE_ANALYSIS.md): competidores, benchmarks UX y mapa de oportunidades con fuentes oficiales.
+
 ## Requisitos y arranque
 
 - Node.js 20.9 o posterior.
@@ -71,7 +77,7 @@ npm test
 npm run build
 ```
 
-Las pruebas crean `prisma/test.db` y limpian únicamente esa base. Cubren importes/validaciones, venta transaccional, doble venta, métricas globales, paginación y aislamiento entre negocios.
+Las pruebas crean `prisma/test.db` y limpian únicamente esa base. Cubren importes/validaciones, defectos obligatorios, referencias y búsqueda aislada, venta transaccional y concurrente, retirada pública, métricas globales y paginación.
 
 ## Estructura
 
@@ -84,7 +90,7 @@ Las pruebas crean `prisma/test.db` y limpian únicamente esa base. Cubren import
 
 ## Operación
 
-`npm run db:push` crea o actualiza la base SQLite local. La migración inicial versionada en `prisma/migrations` permite inicializar Turso con `npm run db:init:turso`. Antes de cambiar un esquema con datos reales, genera y revisa una nueva migración y conserva respaldos de la base y del almacén Blob.
+`npm run db:push` crea o actualiza de forma idempotente la base SQLite local usando las migraciones versionadas. `npm run db:init:turso` aplica el mismo flujo a Turso. La migración de referencias reconstruye `Product` de forma compatible con SQLite, conserva filas existentes y las rellena con una referencia derivada de su ID; las altas nuevas reciben referencias aleatorias desde el backend. Antes de migrar datos reales, conserva respaldos de la base y del almacén Blob.
 
 El despliegue Vercel requiere enlazar un recurso Turso y un almacén Blob públicos. Los recursos pueden crearse con Vercel CLI:
 

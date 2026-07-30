@@ -62,6 +62,10 @@ p { margin-top: 0; }
 .hint { color: var(--muted); font-size: .8rem; }
 .alert { border: 1px solid #e1a9a5; background: #fff1ef; color: #741c18; padding: .85rem 1rem; border-radius: .35rem; }
 .alert.success { border-color: #8ebca8; background: #eaf7f1; color: #114d37; }
+.alert.detail-alert { display: grid; gap: .35rem; border-color: var(--line); background: var(--paper); color: var(--ink); }
+.estimate-note { display: grid; gap: .2rem; padding: .8rem; background: var(--archive-soft); border: 1px solid var(--archive); }
+.estimate-note span, .estimate-note small { color: var(--muted); }
+.estimate-note strong { font-family: var(--font-utility), monospace; }
 
 .brand { display: inline-flex; align-items: center; gap: .65rem; color: inherit; font-family: var(--font-display), "Arial Black", sans-serif; font-size: 1.05rem; line-height: .88; letter-spacing: -.03em; text-decoration: none; }
 .brand-index { display: grid; width: 2.2rem; height: 2.2rem; place-items: center; background: var(--coral); color: var(--ink); font-family: var(--font-utility), monospace; font-size: .68rem; letter-spacing: -.05em; clip-path: polygon(0 0, 78% 0, 100% 50%, 78% 100%, 0 100%); }
@@ -138,6 +142,7 @@ p { margin-top: 0; }
 .badge { display: inline-flex; width: fit-content; padding: .18rem .42rem; background: var(--archive-soft); color: var(--archive-dark); font: 700 .62rem var(--font-utility), monospace; letter-spacing: .03em; text-transform: uppercase; }
 .badge.sold { background: #efe4ed; color: var(--sold); }
 .product-card h3 { overflow-wrap: anywhere; }
+.product-defects { margin: 0; font-size: .84rem; overflow-wrap: anywhere; }
 .product-card .price { margin-top: auto; }
 .card-actions { display: grid; gap: .45rem; }
 .card-actions .button { min-height: 42px; padding: .55rem .65rem; font-size: .78rem; }
@@ -161,6 +166,13 @@ p { margin-top: 0; }
 .photo-input:focus-within { outline: 3px solid var(--coral-dark); outline-offset: 3px; }
 .form-actions { display: grid; gap: .6rem; padding: .8rem; background: white; border: 1px solid var(--line); }
 
+.product-search { display: grid; gap: .75rem; padding: 1rem; background: white; border: 1px solid var(--line); }
+.search-row { display: grid; gap: .65rem; align-items: end; }
+.scan-button { justify-self: start; }
+.scanner-panel { display: grid; gap: .5rem; width: min(100%, 440px); padding: .75rem; background: var(--ink); color: white; }
+.scanner-panel video { width: 100%; min-height: 220px; background: #000; object-fit: cover; }
+.scanner-panel p { margin: 0; }
+
 .sales-page .ledger { margin-bottom: 1.5rem; }
 .sales-layout { display: grid; gap: 3rem; }
 .sale-form { padding: 1rem; background: white; border: 1px solid var(--line); }
@@ -174,6 +186,9 @@ p { margin-top: 0; }
 .panel { background: white; border: 1px solid var(--line); padding: 1rem; }
 .catalog-header { padding: 1rem 0; background: white; border-bottom: 1px solid var(--line); }
 .catalog-intro { padding: 2.8rem 0 1.5rem; }
+.public-product-page { display: grid; gap: 1.5rem; }
+.public-product-layout { display: grid; gap: 1.5rem; align-items: start; }
+.public-product-layout h1 { font-size: clamp(2.2rem, 7vw, 4.5rem); }
 
 @media (min-width: 560px) {
   .ledger { grid-template-columns: repeat(2, 1fr); }
@@ -185,6 +200,7 @@ p { margin-top: 0; }
   .form-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .full { grid-column: 1 / -1; }
   .form-actions { grid-template-columns: 1fr 1fr; }
+  .search-row { grid-template-columns: minmax(0, 1fr) auto auto; }
   .sale-row { flex-direction: row; align-items: center; justify-content: space-between; }
 }
 
@@ -223,6 +239,7 @@ p { margin-top: 0; }
   .form-section-body { clear: none; padding: 1.4rem; }
   .form-actions { position: sticky; bottom: 1rem; z-index: 10; grid-template-columns: auto auto; justify-content: end; background: rgb(244 247 251 / 96%); }
   .sales-layout { grid-template-columns: minmax(280px, .8fr) minmax(360px, 1.2fr); }
+  .public-product-layout { grid-template-columns: minmax(300px, .8fr) minmax(320px, 1.2fr); }
   .auth-card { margin-left: 12%; }
 }
 

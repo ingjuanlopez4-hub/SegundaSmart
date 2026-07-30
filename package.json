@@ -8,8 +8,8 @@
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "test": "DATABASE_URL=file:./test.db prisma db push --skip-generate && DATABASE_URL=file:./test.db vitest run",
-    "db:push": "prisma db push",
+    "test": "DATABASE_URL=file:./test.db prisma migrate reset --force --skip-seed --skip-generate && DATABASE_URL=file:./test.db vitest run",
+    "db:push": "node --env-file=.env scripts/migrate-database.mjs",
     "db:generate": "prisma generate",
     "db:init:turso": "node --env-file=.env.local scripts/init-turso.mjs"
   },

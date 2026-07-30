@@ -17,14 +17,28 @@ export const loginSchema = z.object({
   password: z.string().min(1, "Escribe tu contraseña").max(128),
 });
 
+const optionalDefects = z.preprocess(
+  (value) => typeof value === "string" && value.trim() === "" ? undefined : value,
+  z.string().trim().max(600, "Describe los defectos en menos de 600 caracteres").optional(),
+);
+
 export const productSchema = z.object({
   name: z.string().trim().min(2, "Escribe el nombre del producto").max(120),
   category: z.string().trim().min(2, "Escribe una categoría").max(60),
   condition: z.enum(["Como nuevo", "Buen estado", "Con detalles"]),
+  defects: optionalDefects,
   description: z.string().trim().min(10, "Agrega al menos 10 caracteres").max(1200),
   cost: money,
   price: money.pipe(z.number().positive("El precio debe ser mayor a cero")),
   suggestedPrice: z.union([z.literal(""), money]).optional(),
+}).superRefine((product, context) => {
+  if (product.condition === "Con detalles" && !product.defects) {
+    context.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ["defects"],
+      message: "Describe los defectos visibles de la pieza",
+    });
+  }
 });
 
 export const aiSchema = z.object({

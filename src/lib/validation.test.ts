@@ -19,4 +19,11 @@ describe("validaciones de dominio", () => {
     const parsed = productSchema.safeParse({ name: "X", category: "Ropa", condition: "Buen estado", description: "corta", cost: "20", price: "0", suggestedPrice: "" });
     expect(parsed.success).toBe(false);
   });
+
+  it("exige defectos cuando la condición indica detalles", () => {
+    const base = { name: "Silla", category: "Hogar", condition: "Con detalles", description: "Silla de madera usada", cost: "100", price: "180", suggestedPrice: "" };
+    expect(productSchema.safeParse({ ...base, defects: "" }).success).toBe(false);
+    expect(productSchema.safeParse({ ...base, defects: "Rayón visible en una pata" }).success).toBe(true);
+    expect(productSchema.safeParse({ ...base, condition: "Buen estado", defects: "" }).success).toBe(true);
+  });
 });

@@ -1,7 +1,9 @@
+import { Prisma } from "@prisma/client";
 import { requireApiUser } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { apiError, handleApiError } from "@/lib/http";
 import { storeProductPhoto } from "@/lib/photo-storage";
+import { generateProductReference } from "@/lib/product-reference";
 import { productSchema } from "@/lib/validation";
 
 export const runtime = "nodejs";
@@ -27,17 +29,26 @@ export async function POST(request: Request) {
     const mime = photo.type as keyof typeof imageTypes;
     if (!hasValidSignature(bytes, mime)) return apiError("El archivo no contiene una imagen válida", 422);
     const input = productSchema.parse({
-      name: form.get("name"), category: form.get("category"), condition: form.get("condition"),
+      name: form.get("name"), category: form.get("category"), condition: form.get("condition"), defects: form.get("defects"),
       description: form.get("description"), cost: form.get("cost"), price: form.get("price"), suggestedPrice: form.get("suggestedPrice") ?? "",
     });
     const photoStorage = await storeProductPhoto(user.businessId, bytes, imageTypes[mime]);
     removeSavedPhoto = photoStorage.remove;
-    const product = await db.product.create({ data: {
-      businessId: user.businessId, name: input.name, category: input.category, condition: input.condition,
-      description: input.description, costCents: input.cost, priceCents: input.price,
-      suggestedCents: typeof input.suggestedPrice === "number" ? input.suggestedPrice : null,
-      photoPath: photoStorage.url,
-    } });
+    let product: Awaited<ReturnType<typeof db.product.create>> | null = null;
+    for (let attempt = 0; attempt < 5 && !product; attempt += 1) {
+      try {
+        product = await db.product.create({ data: {
+          businessId: user.businessId, reference: generateProductReference(), name: input.name,
+          category: input.category, condition: input.condition, defects: input.defects,
+          description: input.description, costCents: input.cost, priceCents: input.price,
+          suggestedCents: typeof input.suggestedPrice === "number" ? input.suggestedPrice : null,
+          photoPath: photoStorage.url,
+        } });
+      } catch (error) {
+        if (!(error instanceof Prisma.PrismaClientKnownRequestError) || error.code !== "P2002" || attempt === 4) throw error;
+      }
+    }
+    if (!product) throw new Error("No se pudo generar una referencia única");
     return Response.json({ id: product.id }, { status: 201 });
   } catch (error) {
     if (removeSavedPhoto) await removeSavedPhoto().catch(() => undefined);

@@ -22,6 +22,7 @@ async function createSales(businessId: string, count: number) {
   const products = Array.from({ length: count }, (_, index) => ({
     id: `${businessId}-product-${index}`,
     businessId,
+    reference: `PZ-${String(index).padStart(10, "0")}`,
     name: `Producto ${index}`,
     category: "Hogar",
     condition: "Buen estado",

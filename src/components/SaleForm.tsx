@@ -2,8 +2,9 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { formatMoney } from "@/lib/money";
 
-type SaleProduct = { id: string; name: string; category: string; priceCents: number };
+type SaleProduct = { id: string; reference: string; name: string; category: string; priceCents: number; costCents: number };
 export function SaleForm({ products, initialId }: { products: SaleProduct[]; initialId?: string }) {
   const router = useRouter();
   const initial = products.find((item) => item.id === initialId) ?? products[0];
@@ -12,11 +13,14 @@ export function SaleForm({ products, initialId }: { products: SaleProduct[]; ini
   const [pending, setPending] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const selected = products.find((item) => item.id === selectedId);
+  const amountCents = toCents(amount);
+  const estimatedProfit = selected && amountCents !== null ? amountCents - selected.costCents : null;
 
   async function submit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const selected = products.find((item) => item.id === selectedId);
-    if (!selected || !window.confirm(`Registrar la venta de “${selected.name}” por $${amount} MXN? Esta pieza dejará de aparecer en el catálogo.`)) return;
+    if (!selected || !window.confirm(`Registrar la venta de “${selected.name}” por $${amount} MXN? Ganancia estimada: ${estimatedProfit === null ? "por calcular" : formatMoney(estimatedProfit)}. Esta pieza dejará de aparecer en el catálogo.`)) return;
     setPending(true); setError(""); setSuccess("");
     const data = new FormData(event.currentTarget);
     try {
@@ -32,9 +36,15 @@ export function SaleForm({ products, initialId }: { products: SaleProduct[]; ini
 
   if (products.length === 0) return <section className="panel"><h2>No hay piezas disponibles</h2><p className="muted">Las piezas vendidas no pueden venderse de nuevo. Agrega inventario para registrar otra venta.</p></section>;
   return <form className="sale-form stack" onSubmit={submit}>
-    <div className="field"><label htmlFor="productId">Pieza disponible</label><select id="productId" name="productId" value={selectedId} onChange={(event) => { setSelectedId(event.target.value); const product = products.find((item) => item.id === event.target.value); if (product) setAmount((product.priceCents / 100).toFixed(2)); }}>{products.map((product) => <option key={product.id} value={product.id}>{product.name} · {product.category} · ${(product.priceCents / 100).toFixed(2)}</option>)}</select></div>
+    <div className="field"><label htmlFor="productId">Pieza disponible</label><select id="productId" name="productId" value={selectedId} onChange={(event) => { setSelectedId(event.target.value); const product = products.find((item) => item.id === event.target.value); if (product) setAmount((product.priceCents / 100).toFixed(2)); }}>{products.map((product) => <option key={product.id} value={product.id}>{product.reference} · {product.name} · {product.category} · ${(product.priceCents / 100).toFixed(2)}</option>)}</select></div>
     <div className="field"><label htmlFor="amount">Importe final (MXN)</label><input id="amount" name="amount" type="number" inputMode="decimal" min="0.01" max="1000000" step="0.01" required value={amount} onChange={(event) => setAmount(event.target.value)} /></div>
+    <div className="estimate-note" aria-live="polite"><span>Ganancia estimada</span><strong>{estimatedProfit === null ? "Completa el importe" : formatMoney(estimatedProfit)}</strong><small>Importe final menos costo; no incluye otros gastos.</small></div>
     {error && <div className="alert" role="alert">{error}</div>}{success && <div className="alert success" role="status">{success}</div>}
     <button className="button" disabled={pending}>{pending ? "Registrando venta…" : "Registrar venta"}</button>
   </form>;
+}
+
+function toCents(value: string): number | null {
+  if (!/^\d+(?:\.\d{1,2})?$/.test(value)) return null;
+  return Math.round(Number(value) * 100);
 }
