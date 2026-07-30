@@ -1,0 +1,81 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Business {
+  id        String    @id @default(cuid())
+  name      String
+  slug      String    @unique
+  users     User[]
+  products  Product[]
+  sales     Sale[]
+  createdAt DateTime  @default(now())
+}
+
+model User {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  name         String
+  passwordHash String
+  businessId   String
+  business     Business  @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  sessions     Session[]
+  createdAt    DateTime  @default(now())
+
+  @@index([businessId])
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  tokenHash String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+enum ProductStatus {
+  AVAILABLE
+  SOLD
+}
+
+model Product {
+  id             String        @id @default(cuid())
+  businessId     String
+  business       Business      @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  name           String
+  category       String
+  condition      String
+  description    String
+  photoPath      String
+  costCents      Int
+  priceCents     Int
+  suggestedCents Int?
+  status         ProductStatus @default(AVAILABLE)
+  sale           Sale?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  @@index([businessId, status])
+  @@index([businessId, createdAt])
+}
+
+model Sale {
+  id         String   @id @default(cuid())
+  businessId String
+  business   Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  productId  String   @unique
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Restrict)
+  amountCents Int
+  soldAt     DateTime @default(now())
+
+  @@index([businessId, soldAt])
+}

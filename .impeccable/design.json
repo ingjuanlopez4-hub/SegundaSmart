@@ -1,0 +1,244 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-07-29T17:14:28-07:00",
+  "title": "Design System: SegundaSmart",
+  "extensions": {
+    "colorMeta": {
+      "archive-blue": {
+        "role": "primary",
+        "displayName": "Archive Blue",
+        "canonical": "#1646a0",
+        "tonalRamp": ["#07152f", "#0a2250", "#0d327a", "#1646a0", "#5375ba", "#91a9d8", "#c8d8f8", "#eef4ff"]
+      },
+      "archive-blue-dark": {
+        "role": "primary",
+        "displayName": "Archive Blue Dark",
+        "canonical": "#0d327a",
+        "tonalRamp": ["#061329", "#0a2452", "#0d327a", "#17499a", "#4d70b5", "#8da6d6", "#c8d8f8", "#eef4ff"]
+      },
+      "archive-blue-soft": {
+        "role": "primary",
+        "displayName": "Archive Blue Soft",
+        "canonical": "#dce8ff",
+        "tonalRamp": ["#0b1b38", "#173867", "#315b98", "#5f83bd", "#91a9d8", "#b9ccf5", "#dce8ff", "#f4f8ff"]
+      },
+      "cold-paper": {
+        "role": "neutral",
+        "displayName": "Cold Paper",
+        "canonical": "#f4f7fb",
+        "tonalRamp": ["#20242b", "#3c424b", "#59616d", "#7b8491", "#a0a8b3", "#c6ccd4", "#e2e6ec", "#f4f7fb"]
+      },
+      "white-sheet": {
+        "role": "neutral",
+        "displayName": "White Sheet",
+        "canonical": "#ffffff",
+        "tonalRamp": ["#262626", "#464646", "#666666", "#898989", "#adadad", "#d0d0d0", "#eeeeee", "#ffffff"]
+      },
+      "graphite": {
+        "role": "neutral",
+        "displayName": "Graphite",
+        "canonical": "#171b24",
+        "tonalRamp": ["#171b24", "#303641", "#4d535f", "#6d737e", "#9297a0", "#b8bcc3", "#dcdee2", "#f4f5f6"]
+      },
+      "muted-slate": {
+        "role": "neutral",
+        "displayName": "Muted Slate",
+        "canonical": "#596476",
+        "tonalRamp": ["#18202d", "#303c4d", "#596476", "#747f90", "#99a2af", "#bdc4cd", "#dee2e7", "#f4f6f8"]
+      },
+      "ledger-line": {
+        "role": "neutral",
+        "displayName": "Ledger Line",
+        "canonical": "#cbd5e3",
+        "tonalRamp": ["#1d2632", "#394858", "#596b7e", "#7c8da0", "#a3b0bf", "#cbd5e3", "#e2e8f0", "#f5f7fa"]
+      },
+      "intake-coral": {
+        "role": "secondary",
+        "displayName": "Intake Coral",
+        "canonical": "#ff6b4a",
+        "tonalRamp": ["#3c1009", "#722117", "#a83a28", "#d6533b", "#ff6b4a", "#ff9983", "#ffc5b8", "#fff0eb"]
+      },
+      "intake-coral-dark": {
+        "role": "secondary",
+        "displayName": "Intake Coral Dark",
+        "canonical": "#b9321f",
+        "tonalRamp": ["#3a0d08", "#711b12", "#9b291b", "#b9321f", "#d95b48", "#ed9181", "#f8c7bd", "#fff1ee"]
+      },
+      "sold-plum": {
+        "role": "tertiary",
+        "displayName": "Sold Plum",
+        "canonical": "#6c3b64",
+        "tonalRamp": ["#251020", "#46223f", "#6c3b64", "#8b5a82", "#aa7ea3", "#caa6c4", "#e7d5e3", "#f8f0f6"]
+      },
+      "danger-red": {
+        "role": "tertiary",
+        "displayName": "Danger Red",
+        "canonical": "#a52620",
+        "tonalRamp": ["#350b08", "#651713", "#8c211c", "#a52620", "#ca5049", "#e0837e", "#efb9b5", "#fcebea"]
+      },
+      "success-green": {
+        "role": "tertiary",
+        "displayName": "Success Green",
+        "canonical": "#176447",
+        "tonalRamp": ["#071f16", "#0d3c2a", "#176447", "#318164", "#60a187", "#91c1ad", "#c4dfd3", "#edf7f2"]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Archive Display",
+        "purpose": "Operational questions, page names, and section headings."
+      },
+      "headline": {
+        "displayName": "Record Headline",
+        "purpose": "Section and empty-state headings."
+      },
+      "body": {
+        "displayName": "Working Copy",
+        "purpose": "Instructions, descriptions, and controls in direct Spanish."
+      },
+      "label": {
+        "displayName": "Accession Label",
+        "purpose": "IDs, prices, counts, kickers, stamps, and navigation markers."
+      }
+    },
+    "shadows": [
+      {
+        "name": "authentication-sheet",
+        "value": "0 18px 48px rgb(20 38 75 / 12%)",
+        "purpose": "Ambient depth under the authentication document only."
+      },
+      {
+        "name": "mobile-navigation-lift",
+        "value": "0 -10px 28px rgb(20 38 75 / 8%)",
+        "purpose": "Separates fixed mobile navigation from scrolling records."
+      }
+    ],
+    "motion": [
+      {
+        "name": "control-state",
+        "value": "180ms ease-out",
+        "purpose": "Button fill, border, and pressed-position transitions."
+      },
+      {
+        "name": "field-state",
+        "value": "160ms ease-out",
+        "purpose": "Field border and focus-halo transitions."
+      }
+    ],
+    "breakpoints": [
+      { "name": "record-grid", "value": "560px" },
+      { "name": "desktop-rail", "value": "800px" },
+      { "name": "wide-ledger", "value": "1120px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Commits registration and sale actions.",
+      "html": "<button class=\"ds-button-primary\">Guardar pieza</button>",
+      "css": ".ds-button-primary { min-height: 46px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid var(--archive); border-radius: .35rem; padding: .72rem 1rem; background: var(--archive); color: white; font-family: var(--font-body), Arial, sans-serif; font-weight: 700; line-height: 1.1; cursor: pointer; transition: background-color 180ms ease-out, border-color 180ms ease-out, transform 180ms ease-out; } .ds-button-primary:hover { background: var(--archive-dark); border-color: var(--archive-dark); } .ds-button-primary:focus-visible { outline: 3px solid var(--coral-dark); outline-offset: 3px; } .ds-button-primary:active { transform: translateY(1px); }"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Supports reversible or contextual actions without competing with intake.",
+      "html": "<button class=\"ds-button-secondary\">Revisar inventario</button>",
+      "css": ".ds-button-secondary { min-height: 46px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid var(--archive); border-radius: .35rem; padding: .72rem 1rem; background: transparent; color: var(--archive); font-family: var(--font-body), Arial, sans-serif; font-weight: 700; line-height: 1.1; cursor: pointer; transition: background-color 180ms ease-out, transform 180ms ease-out; } .ds-button-secondary:hover { background: var(--archive-soft); } .ds-button-secondary:focus-visible { outline: 3px solid var(--coral-dark); outline-offset: 3px; } .ds-button-secondary:active { transform: translateY(1px); }"
+    },
+    {
+      "name": "Catalog Field",
+      "kind": "input",
+      "refersTo": "field",
+      "description": "A labeled working field for product identity, value, and description.",
+      "html": "<label class=\"ds-field\"><span>Nombre de la pieza</span><input placeholder=\"Ej. Cámara instantánea\"></label>",
+      "css": ".ds-field { display: grid; gap: .4rem; color: var(--ink); font-family: var(--font-body), Arial, sans-serif; font-size: .88rem; font-weight: 700; } .ds-field input { width: 100%; min-height: 50px; border: 1px solid #9facbf; border-radius: .3rem; background: white; padding: .75rem .85rem; color: var(--ink); font: 400 1rem/1.55 var(--font-body), Arial, sans-serif; transition: border-color 160ms ease-out, box-shadow 160ms ease-out; } .ds-field input:hover { border-color: var(--archive); } .ds-field input:focus { border-color: var(--archive); box-shadow: 0 0 0 3px var(--archive-soft); outline: 0; } .ds-field input:focus-visible { outline: 3px solid var(--coral-dark); outline-offset: 3px; }"
+    },
+    {
+      "name": "Availability Stamp",
+      "kind": "chip",
+      "refersTo": "status-available",
+      "description": "Writes product availability as accession metadata rather than color alone.",
+      "html": "<span class=\"ds-status\">Disponible</span>",
+      "css": ".ds-status { display: inline-flex; width: fit-content; padding: .18rem .42rem; background: var(--archive-soft); color: var(--archive-dark); font: 700 .62rem/1.55 var(--font-utility), monospace; letter-spacing: .03em; text-transform: uppercase; }"
+    },
+    {
+      "name": "Accession Record",
+      "kind": "card",
+      "description": "A flat bordered product record with explicit status, ID, identity, and price.",
+      "html": "<article class=\"ds-record\"><div class=\"ds-record-image\"></div><div class=\"ds-record-body\"><div class=\"ds-record-line\"><span class=\"ds-record-status\">Disponible</span><span class=\"ds-record-id\">PZ-7A42D1</span></div><div><h3>Cámara instantánea</h3><span class=\"ds-record-muted\">Fotografía</span></div><strong class=\"ds-record-price\">$1,250.00</strong></div></article>",
+      "css": ".ds-record { overflow: hidden; display: grid; grid-template-columns: minmax(118px, 38%) 1fr; background: white; border: 1px solid var(--line); color: var(--ink); font-family: var(--font-body), Arial, sans-serif; } .ds-record-image { min-height: 190px; background: var(--archive-soft); } .ds-record-body { min-width: 0; display: flex; flex-direction: column; gap: .75rem; padding: 1rem; } .ds-record-line { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .5rem; } .ds-record-status { width: fit-content; padding: .18rem .42rem; background: var(--archive-soft); color: var(--archive-dark); font: 700 .62rem/1.55 var(--font-utility), monospace; text-transform: uppercase; } .ds-record-id { color: var(--muted); font: 600 .61rem/1.55 var(--font-utility), monospace; } .ds-record h3 { margin: 0; font: 400 1.15rem/1.1 var(--font-display), Arial Black, sans-serif; letter-spacing: -.025em; } .ds-record-muted { color: var(--muted); } .ds-record-price { margin-top: auto; font: 700 1.28rem/1.55 var(--font-utility), monospace; letter-spacing: -.03em; } .ds-record:focus-within { outline: 3px solid var(--coral-dark); outline-offset: 3px; }"
+    },
+    {
+      "name": "Intake Action",
+      "kind": "custom",
+      "refersTo": "intake-action",
+      "description": "The dominant route from business state to a new accession record.",
+      "html": "<a class=\"ds-intake\" href=\"#\"><span aria-hidden=\"true\">+</span><strong>Agregar pieza</strong><small>Nuevo ingreso</small></a>",
+      "css": ".ds-intake { min-height: 160px; display: grid; grid-template-columns: auto 1fr; align-content: center; align-items: center; gap: .1rem .9rem; padding: 1.4rem; background: var(--coral); color: var(--ink); font-family: var(--font-body), Arial, sans-serif; text-decoration: none; transition: background-color 180ms ease-out; } .ds-intake:hover { background: #ff8268; } .ds-intake:focus-visible { outline: 3px solid var(--coral-dark); outline-offset: 3px; } .ds-intake > span { grid-row: 1 / 3; font: 400 4.8rem/1 var(--font-display), Arial Black, sans-serif; } .ds-intake strong { align-self: end; font: 400 1.5rem/1 var(--font-display), Arial Black, sans-serif; } .ds-intake small { align-self: start; font: 700 .68rem/1.55 var(--font-utility), monospace; letter-spacing: .06em; text-transform: uppercase; }"
+    },
+    {
+      "name": "Cataloging Section",
+      "kind": "custom",
+      "description": "A numbered archive band joined to one stage of the product intake table.",
+      "html": "<section class=\"ds-catalog-section\"><header><span>1</span><strong>Fotografía e identidad</strong><small>Lo que hace reconocible esta pieza</small></header><div class=\"ds-catalog-body\">Campos de la ficha</div></section>",
+      "css": ".ds-catalog-section { display: grid; grid-template-columns: 220px 1fr; margin: 0; background: white; border: 1px solid var(--line); color: var(--ink); font-family: var(--font-body), Arial, sans-serif; } .ds-catalog-section header { display: grid; grid-template-rows: auto auto auto; align-content: start; gap: .15rem; padding: 1.25rem; background: var(--archive); color: white; } .ds-catalog-section header > span { display: grid; width: 2rem; height: 2rem; place-items: center; margin-bottom: 2rem; border: 1px solid #b9ccf5; font: 700 .72rem/1 var(--font-utility), monospace; } .ds-catalog-section header strong { font-size: 1rem; line-height: 1.1; } .ds-catalog-section header small { color: #d8e5ff; font-size: .72rem; } .ds-catalog-body { padding: 1.4rem; } .ds-catalog-section:focus-within { outline: 3px solid var(--coral-dark); outline-offset: 3px; } @media (max-width: 799px) { .ds-catalog-section { grid-template-columns: 1fr; } .ds-catalog-section header { grid-template-columns: auto 1fr; grid-template-rows: auto auto; align-items: center; padding: 1rem; } .ds-catalog-section header > span { grid-row: 1 / 3; margin: 0 .75rem 0 0; } .ds-catalog-body { padding: 1rem; } }"
+    },
+    {
+      "name": "Archive Navigation",
+      "kind": "nav",
+      "description": "Keeps summary, inventory, intake, and sales in context; intake remains coral.",
+      "html": "<nav class=\"ds-nav\"><a class=\"ds-nav-current\" href=\"#\"><span>RE</span><strong>Resumen</strong></a><a href=\"#\"><span>IN</span><strong>Inventario</strong></a><a class=\"ds-nav-add\" href=\"#\"><span>+</span><strong>Agregar pieza</strong></a><a href=\"#\"><span>VE</span><strong>Ventas</strong></a></nav>",
+      "css": ".ds-nav { display: grid; gap: .25rem; padding: 1rem; background: var(--archive); font-family: var(--font-body), Arial, sans-serif; } .ds-nav a { min-height: 46px; display: grid; grid-template-columns: 2.1rem 1fr; align-items: center; gap: .6rem; padding: .65rem .55rem; color: #d9e5ff; text-decoration: none; } .ds-nav a:hover { background: #2858ae; } .ds-nav a:focus-visible { outline: 3px solid var(--coral-dark); outline-offset: 3px; } .ds-nav a > span { font: 700 .62rem/1.55 var(--font-utility), monospace; } .ds-nav a > strong { font-size: .82rem; } .ds-nav .ds-nav-current { background: white; color: var(--archive-dark); } .ds-nav .ds-nav-add { margin-block: .55rem; background: var(--coral); color: var(--ink); } .ds-nav .ds-nav-add:hover { background: #ff8268; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "Registro de procedencia",
+    "overview": "SegundaSmart treats every product as an irrepeatable accession record. Archive blue, cold paper, graphite, and coral turn inventory work into a clear intake desk: numbered cataloging bands establish order, monospace metadata identifies records, and compact status stamps make availability unequivocal.\n\nThe system is operational rather than dashboard-like. The owner first sees the question that matters, a dominant path to register the next piece, and a restrained accounting strip; surrounding navigation keeps the business and public catalog in context. Generic SaaS card dashboards are explicitly rejected in favor of bordered records, ledgers, and intake tables.",
+    "keyCharacteristics": [
+      "Archive-like, high-contrast working surfaces.",
+      "One dominant coral intake action against an archive-blue field.",
+      "Accession IDs, accounting figures, and labels set in monospace.",
+      "Square record structures with only gently rounded controls.",
+      "Mobile-first continuity from bottom navigation to desktop rail."
+    ],
+    "rules": [
+      {
+        "name": "The Coral Intake Rule",
+        "body": "Coral signals entry into the archive; do not distribute it across routine metrics or secondary actions.",
+        "section": "colors"
+      },
+      {
+        "name": "The Status Is Written Rule",
+        "body": "Availability and sale state always include a text stamp; color never carries status alone.",
+        "section": "colors"
+      },
+      {
+        "name": "The Recorded Data Rule",
+        "body": "Use Azeret Mono for accession data and accounting signals, not for prose or primary actions.",
+        "section": "typography"
+      },
+      {
+        "name": "The Flat Archive Rule",
+        "body": "Records, ledgers, panels, and form sections remain flat and bordered at rest; do not turn them into floating cards.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do treat each product as one accession record with photograph, written status, price, and `PZ-` identifier.",
+      "Do keep the operational question, dominant intake action, and accounting strip together in the first dashboard viewport.",
+      "Do preserve mobile task context through the fixed bottom navigation and the desktop archive rail.",
+      "Do use numbered archive-blue bands to sequence multi-part cataloging forms.",
+      "Do keep suggestions editable and expose loading, error, empty, and success states in direct Spanish."
+    ],
+    "donts": [
+      "Don't replace records and ledgers with generic rounded SaaS cards or isolated metric tiles.",
+      "Don't use coral as a general-purpose accent; it belongs to intake and visible focus.",
+      "Don't communicate availability, sale, error, or success through color alone.",
+      "Don't add elevation to routine records, form sections, or accounting cells.",
+      "Don't hide the business name, public catalog path, or primary add action when navigation changes across breakpoints."
+    ]
+  }
+}

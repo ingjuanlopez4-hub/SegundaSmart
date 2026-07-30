@@ -1,0 +1,15 @@
+node_modules/
+.next/
+.env
+dev.db
+dev.db-journal
+test.db
+test.db-journal
+public/uploads/*
+!public/uploads/.gitkeep
+coverage/
+*.tsbuildinfo
+graphify-out/
+artifacts/
+.playwright-mcp/
+.impeccable/questions/
