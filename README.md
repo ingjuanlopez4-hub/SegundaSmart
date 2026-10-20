@@ -27,6 +27,7 @@ MVP local para que negocios de artículos de segunda mano administren piezas ún
 - [`PRODUCT.md`](PRODUCT.md): usuarios, posicionamiento, principios y límites del producto.
 - [`DESIGN.md`](DESIGN.md): sistema visual y reglas de interacción responsive.
 - [`COMPETITIVE_ANALYSIS.md`](COMPETITIVE_ANALYSIS.md): competidores, benchmarks UX y mapa de oportunidades con fuentes oficiales.
+- [`.opencode/README.md`](.opencode/README.md): equipo de agentes de desarrollo, activación y protocolo de colaboración para continuar el MVP.
 
 ## Requisitos y arranque
 
