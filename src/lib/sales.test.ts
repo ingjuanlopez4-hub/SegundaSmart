@@ -52,4 +52,13 @@ describe("registro transaccional de ventas", () => {
     await expect(registerSale(prisma, { businessId: second.id, productId: product.id, amountCents: 18000 })).rejects.toBeInstanceOf(ProductAlreadySoldError);
     expect((await prisma.product.findUniqueOrThrow({ where: { id: product.id } })).status).toBe("AVAILABLE");
   });
+
+  it("revierte el cambio de estado si no puede persistir la venta", async () => {
+    const { first, product } = await fixture();
+    await expect(registerSale(prisma, { businessId: first.id, productId: product.id, amountCents: Number.NaN })).rejects.toThrow();
+    expect((await prisma.product.findUniqueOrThrow({ where: { id: product.id } })).status).toBe("AVAILABLE");
+    expect(await prisma.sale.count({ where: { productId: product.id } })).toBe(0);
+    await registerSale(prisma, { businessId: first.id, productId: product.id, amountCents: 18000 });
+    expect(await prisma.sale.count({ where: { productId: product.id } })).toBe(1);
+  });
 });

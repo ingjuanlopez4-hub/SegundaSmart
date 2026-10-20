@@ -60,6 +60,11 @@ p { margin-top: 0; }
 .field textarea { min-height: 150px; resize: vertical; }
 .field input::placeholder, .field textarea::placeholder { color: #687487; opacity: 1; }
 .hint { color: var(--muted); font-size: .8rem; }
+.field-error { color: var(--danger); font-size: .88rem; overflow-wrap: anywhere; }
+.field [aria-invalid="true"] { border-color: var(--danger); }
+.photo-input:has([aria-invalid="true"]) { border-color: var(--danger); }
+.intake-form .form-section, .intake-form .form-section-body { min-width: 0; }
+.intake-form .field input, .intake-form .field textarea, .intake-form .field select { scroll-margin-block: 6rem; }
 .alert { border: 1px solid #e1a9a5; background: #fff1ef; color: #741c18; padding: .85rem 1rem; border-radius: .35rem; }
 .alert.success { border-color: #8ebca8; background: #eaf7f1; color: #114d37; }
 .alert.detail-alert { display: grid; gap: .35rem; border-color: var(--line); background: var(--paper); color: var(--ink); }

@@ -11,16 +11,18 @@ type Suggestion = {
   source: "ai" | "local";
 };
 
+const maxPriceCents = 100_000_000;
+
 function withRange(
   suggestion: Omit<Suggestion, "suggestedMin" | "suggestedMax" | "explanation">,
   condition: string,
 ): Suggestion {
   const priceCents = Math.round(Number(suggestion.suggestedPrice) * 100);
-  const roundToFivePesos = (cents: number) => Math.max(100, Math.round(cents / 500) * 500);
+  const roundToFivePesos = (cents: number) => Math.min(maxPriceCents, Math.max(1, Math.round(cents / 500) * 500));
   return {
     ...suggestion,
-    suggestedMin: (roundToFivePesos(priceCents * 0.9) / 100).toFixed(2),
-    suggestedMax: (roundToFivePesos(priceCents * 1.1) / 100).toFixed(2),
+    suggestedMin: (Math.min(priceCents, roundToFivePesos(priceCents * 0.9)) / 100).toFixed(2),
+    suggestedMax: (Math.max(priceCents, roundToFivePesos(priceCents * 1.1)) / 100).toFixed(2),
     explanation: suggestion.source === "ai"
       ? `Rango orientativo alrededor de la sugerencia, considerando el estado “${condition}”. Compáralo con tu mercado.`
       : `Rango orientativo calculado desde tu costo y el estado “${condition}”. Compáralo con piezas similares.`,
@@ -29,7 +31,7 @@ function withRange(
 
 function localSuggestion(input: { name: string; category: string; condition: string; cost: number }): Suggestion {
   const factors: Record<string, number> = { "Como nuevo": 2.1, "Buen estado": 1.8, "Con detalles": 1.5 };
-  const cents = Math.max(100, Math.ceil((input.cost * (factors[input.condition] ?? 1.8)) / 500) * 500);
+  const cents = Math.min(maxPriceCents, Math.max(100, Math.ceil((input.cost * (factors[input.condition] ?? 1.8)) / 500) * 500));
   return withRange({
     description: `${input.name} de segunda mano en ${input.condition.toLowerCase()}. Pieza de la categoría ${input.category}, lista para encontrar un nuevo hogar. Revisa la fotografía y agrega aquí medidas, materiales o detalles importantes.`,
     suggestedPrice: (cents / 100).toFixed(2), source: "local",
@@ -51,8 +53,8 @@ async function aiSuggestion(input: { name: string; category: string; condition: 
     if (!response.ok) return null;
     const payload = await response.json() as { choices?: Array<{ message?: { content?: string } }> };
     const parsed = JSON.parse(payload.choices?.[0]?.message?.content ?? "{}") as { description?: unknown; suggestedPrice?: unknown };
-    if (typeof parsed.description !== "string" || parsed.description.length < 10 || parsed.description.length > 1200 || typeof parsed.suggestedPrice !== "number" || parsed.suggestedPrice <= 0 || parsed.suggestedPrice > 1_000_000) return null;
-    return withRange({ description: parsed.description, suggestedPrice: parsed.suggestedPrice.toFixed(2), source: "ai" }, input.condition);
+    if (typeof parsed.description !== "string" || parsed.description.trim().length < 10 || parsed.description.trim().length > 1200 || typeof parsed.suggestedPrice !== "number" || !Number.isFinite(parsed.suggestedPrice) || parsed.suggestedPrice <= 0 || parsed.suggestedPrice > maxPriceCents / 100 || Math.round(parsed.suggestedPrice * 100) < 1) return null;
+    return withRange({ description: parsed.description.trim(), suggestedPrice: parsed.suggestedPrice.toFixed(2), source: "ai" }, input.condition);
   } catch { return null; }
 }
 
