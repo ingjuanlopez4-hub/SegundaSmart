@@ -9,6 +9,7 @@ Agentes de proyecto para OpenCode. Se descubren automáticamente desde `.opencod
 | `ss-coordinador` | Principal | Elegir incrementos del MVP, repartir tareas, integrar y cerrar con evidencia. |
 | `ss-backend` | Subagente | APIs, sesiones, Prisma, aislamiento, transacciones, fotografías, QR e IA. |
 | `ss-frontend` | Subagente | Flujos mobile first, validación, accesibilidad, estados y recuperación. |
+| `ss-ui-ux` | Subagente | Auditoría de experiencia, dirección visual y desarrollo de mejoras del frontend con evidencia móvil. |
 | `ss-calidad` | Subagente | Regresiones, SQLite real, comprobaciones del proyecto y flujos móviles. |
 | `ss-revisor` | Subagente de solo lectura | Revisión independiente de integridad, aislamiento y regresiones. |
 
@@ -47,11 +48,28 @@ También puedes mencionar directamente a un especialista en una sesión:
 ```text
 @ss-backend Revisa el contrato de ventas y corrige el fallo descrito con pruebas de integración.
 @ss-frontend Corrige el formulario de alta conservando las ediciones cuando falla la sugerencia.
+@ss-ui-ux Desarrolla una mejor versión del inventario y su navegación mobile first: diagnostica fricciones, mejora jerarquía y acciones con la identidad de DESIGN.md, implementa el flujo y verifica carga, vacío, error y éxito.
 @ss-calidad Verifica el diff actual y el flujo de venta en dos pestañas con una base de prueba.
 @ss-revisor Revisa el diff actual buscando fugas entre negocios y regresiones de doble venta.
 ```
 
 ## Protocolo de colaboración
+
+### Especialista UI/UX
+
+`ss-ui-ux` puede auditar y también implementar mejoras reales: navegación, composición, tipografía, densidad, fotografías, microcopy, formularios y estados accesibles. Su definición está en [`agents/ss-ui-ux.md`](agents/ss-ui-ux.md). Hereda el modelo de la sesión y no requiere modificar la configuración global.
+
+Para una petición amplia de “mejor frontend”, el coordinador acuerda un incremento completo y sus criterios antes de repartir archivos. El especialista conserva o evoluciona justificadamente el sistema visual documentado; trabaja con `ss-frontend` sobre archivos distintos y entrega a `ss-calidad` escenarios de navegador a 360, 390, 800 y 1024 px. No basta con un informe o una maqueta cuando se solicita desarrollar.
+
+Después de reiniciar OpenCode, comprueba la nueva definición:
+
+```bash
+opencode debug agent ss-ui-ux --pure
+```
+
+La definición `ss-ui-ux` se validó con ese comando (salida 0, `mode: subagent`, prompt y descripción cargados). Tras incorporarla también aprobaron linter, TypeScript, las 137 pruebas y la compilación de producción. Esta comprobación acredita la configuración; el agente estará disponible para nuevas tareas al reiniciar la sesión. La creación del agente no modifica las pantallas del producto.
+
+### Integración
 
 1. El coordinador delimita objetivo, criterios de aceptación y archivos antes de delegar.
 2. Los especialistas trabajan en archivos acordados. No se asignan escrituras simultáneas sobre el mismo archivo.

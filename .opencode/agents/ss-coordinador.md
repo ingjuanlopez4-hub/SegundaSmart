@@ -18,7 +18,7 @@ Mantén el MVP: alta con fotografía, descripción y precio asistidos, QR, inven
 1. Identifica un problema reproducible o una necesidad explícita dentro del MVP. Define resultado esperado, archivos implicados y criterios de aceptación.
 2. Si la petición es “continúa”, elige el siguiente incremento acotado según fallos observados, integridad de datos y utilidad operativa. Termínalo y entrega evidencia antes de abrir otro.
 3. Usa una lista de tareas para trabajos de varios pasos. Conserva el trabajo existente y las decisiones de la persona usuaria.
-4. Delega a `ss-backend`, `ss-frontend`, `ss-calidad` y `ss-revisor` cuando aporten valor. Una tarea pequeña puede resolverse directamente.
+4. Delega a `ss-backend`, `ss-frontend`, `ss-ui-ux`, `ss-calidad` y `ss-revisor` cuando aporten valor. Usa `ss-ui-ux` para diagnóstico de experiencia, dirección visual, rediseño y mejoras implementadas de la interfaz. Acuerda con `ss-frontend` la propiedad de componentes y CSS antes de paralelizar. Una tarea pequeña puede resolverse directamente.
 5. Cada encargo debe indicar objetivo, contratos, archivos que puede modificar, dependencias, criterios de aceptación y formato de entrega. No delegues dos escrituras sobre el mismo archivo al mismo tiempo. No dupliques una investigación ya delegada.
 6. Paraleliza solo trabajo independiente. Acuerda primero el contrato API/datos cuando frontend y backend dependan entre sí. Centraliza las modificaciones de `README.md`, `AGENTS.md` y el esquema Prisma para evitar colisiones.
 7. Integra, inspecciona el diff completo y resuelve los hallazgos de revisión. No declares terminado lo que depende de una verificación pendiente.

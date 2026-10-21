@@ -199,7 +199,15 @@ Dashed borders are reserved for the photograph intake target. Solid one-pixel li
 
 ### Navigation
 
-Mobile navigation is a four-column fixed bottom bar with 54px targets and a 66px coral add tab. Current links use archive blue. At 800px it becomes a full-height archive-blue rail: two-letter mono markers precede labels, the active row becomes a white sheet, and the coral add row remains visually dominant. Business identity and catalog/logout actions stay visible in both modes.
+Mobile navigation is a four-column fixed bottom bar with 54px targets and a 66px coral add tab. Simple outlined icons accompany persistent text labels; the current link also has a pale-blue field and top rule, not color alone. At 800px it becomes a full-height archive-blue rail with the same icons and labels: the active row becomes a white sheet, and the coral add row remains visually dominant. The rail scrolls on short viewports and has white keyboard focus outlines. Business identity wraps instead of being truncated; on mobile it occupies a second header row. Catalog/logout actions stay visible in both modes, with at least 44px targets.
+
+### Inventory workbench
+
+Inventory is an operational exception to the large display heading and viewport-driven public grid described above. Its heading stays at 2.5rem, with no extra bottom margin; coral identifies `Agregar pieza`. Search, status filters and results follow immediately. `Todas`, `Disponibles` and `Vendidas` are real URL links with a 48px minimum height, an explicit current state and query-scoped counts. Both searching and clearing preserve the selected status. Results are newest-first, interleaving statuses only in `Todas`; written stamps keep each piece unambiguous.
+
+The private grid uses the **content container**: one column below 560px useful width, two from 560px and three from 960px. At the 800px rail breakpoint this deliberately returns to one column. Horizontal records have a 112px image well; vertical records have a 4:3 well. Private photos use `contain` so a unique piece is not cropped. Actions are a separate full-width footer: `Registrar venta` first, then sharing and QR. Sold records have no sale/public action. All footer targets are at least 46px high. Images include a recoverable error state; prices explicitly include MXN.
+
+Inventory supporting text uses the existing compact 0.85rem body step; horizontal and vertical prices use 1.05rem and 1.2rem respectively, with a 0.72rem currency label. These are intentional operational sizes, not a new display scale. Coral hover reuses the existing #ff8268 intake hover. Empty states distinguish no inventory, no matches and no pieces in a status, with a real next action. Route loading is a static record placeholder with a status announcement, without animation; route errors explain that data is unchanged and offer retry.
 
 ### Intake Table
 

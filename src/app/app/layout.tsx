@@ -11,7 +11,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
     <div className="app-shell">
       <aside className="app-rail">
         <Brand />
-        <div className="business-stamp"><span>Espacio de trabajo</span><strong>{user.business.name}</strong></div>
+        <div className="business-stamp"><span>Espacio de trabajo</span><strong title={user.business.name}>{user.business.name}</strong></div>
         <AppNavigation />
         <div className="rail-footer"><Link href={`/catalogo/${user.business.slug}`} target="_blank">Abrir catálogo <span aria-hidden="true">↗</span></Link><LogoutButton /></div>
       </aside>
