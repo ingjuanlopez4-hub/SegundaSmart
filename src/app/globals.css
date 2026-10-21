@@ -175,11 +175,17 @@ p { margin-top: 0; }
 .search-row { display: grid; gap: .65rem; align-items: end; }
 .scan-button { justify-self: start; }
 .scanner-panel { display: grid; gap: .5rem; width: min(100%, 440px); padding: .75rem; background: var(--ink); color: white; }
+.scanner-panel[hidden] { display: none; }
 .scanner-panel video { width: 100%; min-height: 220px; background: #000; object-fit: cover; }
 .scanner-panel p { margin: 0; }
 
 .sales-page .ledger { margin-bottom: 1.5rem; }
-.sales-layout { display: grid; gap: 3rem; }
+.sales-page { container-type: inline-size; }
+.sales-layout { display: grid; grid-template-columns: minmax(0, 1fr); gap: 3rem; }
+.sales-layout > section, .sales-layout .sale-row > div { min-width: 0; }
+.sales-layout .sale-row strong { overflow-wrap: anywhere; }
+.sales-layout .section-heading { flex-wrap: wrap; }
+.sales-layout .sale-row { flex-wrap: wrap; }
 .sale-form { padding: 1rem; background: white; border: 1px solid var(--line); }
 .empty-inline { padding: 1.2rem 0; border-bottom: 1px solid var(--line); }
 .empty-inline p { margin-bottom: .2rem; font-weight: 700; }
@@ -243,9 +249,13 @@ p { margin-top: 0; }
   .form-section legend > span { grid-row: auto; margin-bottom: 2rem; }
   .form-section-body { clear: none; padding: 1.4rem; }
   .form-actions { position: sticky; bottom: 1rem; z-index: 10; grid-template-columns: auto auto; justify-content: end; background: rgb(244 247 251 / 96%); }
-  .sales-layout { grid-template-columns: minmax(280px, .8fr) minmax(360px, 1.2fr); }
   .public-product-layout { grid-template-columns: minmax(300px, .8fr) minmax(320px, 1.2fr); }
   .auth-card { margin-left: 12%; }
+}
+
+/* Includes both column minima and the gap, after the archive rail and gutters. */
+@container (min-width: 720px) {
+  .sales-layout { grid-template-columns: minmax(280px, .8fr) minmax(360px, 1.2fr); }
 }
 
 @media (min-width: 1120px) {

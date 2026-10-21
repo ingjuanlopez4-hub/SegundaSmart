@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { formatMoney } from "@/lib/money";
 import { aiSchema, productSchema } from "@/lib/validation";
+import { collectFieldErrors, FieldError, fieldErrorProps, focusFirstError, type FieldErrors } from "./form-errors";
 
 export function ProductForm() {
   const router = useRouter();
@@ -14,6 +15,7 @@ export function ProductForm() {
   const [notice, setNotice] = useState("");
   const [preview, setPreview] = useState("");
   const [photoError, setPhotoError] = useState("");
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const suggestionRequest = useRef<AbortController | null>(null);
   const saving = useRef(false);
   const [condition, setCondition] = useState("Buen estado");
@@ -27,7 +29,7 @@ export function ProductForm() {
   const estimatedProfit = costCents !== null && priceCents !== null ? priceCents - costCents : null;
 
   useEffect(() => () => { if (preview) URL.revokeObjectURL(preview); }, [preview]);
-  useEffect(() => () => { suggestionRequest.current?.abort(); }, []);
+  useEffect(() => () => { suggestionRequest.current?.abort(); suggestionRequest.current = null; }, []);
 
   function cancelSuggestion() {
     suggestionRequest.current?.abort();
@@ -75,7 +77,7 @@ export function ProductForm() {
     try {
       const response = await fetch("/api/ai/sugerir", { method: "POST", signal: controller.signal, headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name: data.get("name"), category: data.get("category"), condition: data.get("condition"), cost: data.get("cost") }) });
       const result = (await response.json()) as { description?: string; suggestedPrice?: string; suggestedMin?: string; suggestedMax?: string; explanation?: string; source?: string; error?: string };
-      if (controller.signal.aborted || suggestionRequest.current !== controller) return;
+      if (controller.signal.aborted || suggestionRequest.current !== controller || saving.current) return;
       if (!response.ok) throw new Error(result.error ?? "No se pudo crear la sugerencia");
       const currentData = new FormData(form);
       if ([...requiredForSuggestion, "condition"].some((name) => currentData.get(name) !== data.get(name))) {
@@ -112,13 +114,18 @@ export function ProductForm() {
     const form = event.currentTarget;
     const body = new FormData(form);
     const input = productSchema.safeParse(Object.fromEntries(body));
-    if (!input.success) {
-      const issue = input.error.issues[0];
-      setError(issue?.message ?? "Revisa los datos de la pieza");
-      const field = form.elements.namedItem(String(issue?.path[0]));
-      if (field instanceof HTMLElement) field.focus();
+    const errors = input.success ? {} : collectFieldErrors(input.error.issues);
+    const photo = body.get("photo");
+    const invalidPhoto = !(photo instanceof File) || !["image/jpeg", "image/png", "image/webp"].includes(photo.type) || photo.size === 0 || photo.size > 5 * 1024 * 1024;
+    const nextPhotoError = invalidPhoto ? photoError || "Agrega una fotografía JPG, PNG o WebP de hasta 5 MB, que no esté vacía." : "";
+    setFieldErrors(errors);
+    setPhotoError(nextPhotoError);
+    if (!input.success || invalidPhoto) {
+      setError("Revisa los campos indicados antes de guardar la pieza.");
+      focusFirstError(form, { ...errors, ...(nextPhotoError ? { photo: nextPhotoError } : {}) });
       return;
     }
+    // FormData includes the file and every field BEFORE pending disables controls.
     saving.current = true;
     suggestionRequest.current?.abort();
     suggestionRequest.current = null;
@@ -132,22 +139,22 @@ export function ProductForm() {
     } catch (cause) { setError(cause instanceof Error ? cause.message : "No se pudo guardar el producto"); saving.current = false; setPending(false); }
   }
 
-  return <form className="intake-form stack" onSubmit={submit}>
-    <fieldset className="form-section"><legend><span>1</span><strong>Fotografía e identidad</strong><small>Lo que hace reconocible esta pieza</small></legend><div className="form-section-body form-grid">
+  return <form className="intake-form stack" onSubmit={submit} noValidate aria-busy={pending}>
+    <fieldset className="form-section" disabled={pending}><legend><span>1</span><strong>Fotografía e identidad</strong><small>Lo que hace reconocible esta pieza</small></legend><div className="form-section-body form-grid">
       <div className="field photo-field full"><label htmlFor="photo">Fotografía principal</label><div className={`photo-input ${preview ? "has-preview" : ""}`}>{preview ? <Image src={preview} alt="Vista previa de la pieza" fill sizes="(max-width: 760px) 100vw, 45vw" unoptimized /> : <div><span aria-hidden="true">+</span><strong>Toma o elige una foto</strong><small>La imagen será la portada del catálogo</small></div>}<input id="photo" name="photo" type="file" accept="image/jpeg,image/png,image/webp" capture="environment" required aria-invalid={Boolean(photoError)} aria-describedby={`photo-hint${photoError ? " photo-error" : ""}`} onChange={selectPhoto} /></div><span className="hint" id="photo-hint">JPG, PNG o WebP; máximo 5 MB.{preview && " Toca la foto para cambiarla."}</span>{photoError && <span className="field-error" id="photo-error" role="alert">{photoError}</span>}</div>
-      <div className="field"><label htmlFor="name">Nombre de la pieza</label><input id="name" name="name" required minLength={2} maxLength={120} placeholder="Ej. Cámara instantánea" /></div>
-      <div className="field"><label htmlFor="category">Categoría</label><input id="category" name="category" required minLength={2} maxLength={60} placeholder="Ej. Fotografía" /></div>
-      <div className="field full"><label htmlFor="condition">Estado físico</label><select id="condition" name="condition" required value={condition} onChange={(event) => setCondition(event.target.value)}><option>Como nuevo</option><option>Buen estado</option><option>Con detalles</option></select></div>
-      <div className="field full"><label htmlFor="defects">Defectos o detalles visibles {condition !== "Con detalles" && <span className="muted">(opcional)</span>}</label><textarea id="defects" name="defects" required={condition === "Con detalles"} maxLength={600} aria-describedby="defects-hint" placeholder="Ej. Rasguño de 2 cm en el costado; funciona correctamente." /><span className="hint" id="defects-hint">Si eliges “Con detalles”, describe aquí lo que la persona compradora debe saber.</span></div>
+      <div className="field"><label htmlFor="name">Nombre de la pieza</label><input id="name" name="name" required minLength={2} maxLength={120} placeholder="Ej. Cámara instantánea" {...fieldErrorProps(fieldErrors, "name")} /><FieldError errors={fieldErrors} name="name" /></div>
+      <div className="field"><label htmlFor="category">Categoría</label><input id="category" name="category" required minLength={2} maxLength={60} placeholder="Ej. Fotografía" {...fieldErrorProps(fieldErrors, "category")} /><FieldError errors={fieldErrors} name="category" /></div>
+      <div className="field full"><label htmlFor="condition">Estado físico</label><select id="condition" name="condition" required value={condition} onChange={(event) => setCondition(event.target.value)} {...fieldErrorProps(fieldErrors, "condition")}><option>Como nuevo</option><option>Buen estado</option><option>Con detalles</option></select><FieldError errors={fieldErrors} name="condition" /></div>
+      <div className="field full"><label htmlFor="defects">Defectos o detalles visibles {condition !== "Con detalles" && <span className="muted">(opcional)</span>}</label><textarea id="defects" name="defects" required={condition === "Con detalles"} maxLength={600} {...fieldErrorProps(fieldErrors, "defects", "defects-hint")} placeholder="Ej. Rasguño de 2 cm en el costado; funciona correctamente." /><span className="hint" id="defects-hint">Si eliges “Con detalles”, describe aquí lo que la persona compradora debe saber.</span><FieldError errors={fieldErrors} name="defects" /></div>
     </div></fieldset>
-    <fieldset className="form-section"><legend><span>2</span><strong>Valor</strong><small>Lo que pagaste y lo que quieres recibir</small></legend><div className="form-section-body form-grid">
-      <div className="field"><label htmlFor="cost">Costo (MXN)</label><input id="cost" name="cost" type="number" inputMode="decimal" min="0" max="1000000" step="0.01" required placeholder="0.00" value={cost} onChange={(event) => setCost(event.target.value)} /></div>
-      <div className="field"><label htmlFor="price">Precio de venta (MXN)</label><input id="price" name="price" type="number" inputMode="decimal" min="0.01" max="1000000" step="0.01" required placeholder="0.00" value={price} onChange={(event) => setPrice(event.target.value)} /></div>
-      <div className="field full"><label htmlFor="suggestedPrice">Precio orientativo (MXN)</label><input id="suggestedPrice" name="suggestedPrice" type="number" inputMode="decimal" min="0" max="1000000" step="0.01" placeholder="Se completa al pedir una sugerencia" value={suggestedPrice} onChange={(event) => setSuggestedPrice(event.target.value)} /><span className="hint">Es una referencia editable, no una tasación, y no cambia tu precio final.</span>{suggestedRange && <div className="estimate-note" role="status"><strong>Rango orientativo: ${suggestedRange.min}–${suggestedRange.max} MXN</strong><span>{suggestedRange.explanation}</span></div>}</div>
+    <fieldset className="form-section" disabled={pending}><legend><span>2</span><strong>Valor</strong><small>Lo que pagaste y lo que quieres recibir</small></legend><div className="form-section-body form-grid">
+      <div className="field"><label htmlFor="cost">Costo (MXN)</label><input id="cost" name="cost" type="number" inputMode="decimal" min="0" max="1000000" step="0.01" required placeholder="0.00" value={cost} onChange={(event) => setCost(event.target.value)} {...fieldErrorProps(fieldErrors, "cost")} /><FieldError errors={fieldErrors} name="cost" /></div>
+      <div className="field"><label htmlFor="price">Precio de venta (MXN)</label><input id="price" name="price" type="number" inputMode="decimal" min="0.01" max="1000000" step="0.01" required placeholder="0.00" value={price} onChange={(event) => setPrice(event.target.value)} {...fieldErrorProps(fieldErrors, "price")} /><FieldError errors={fieldErrors} name="price" /></div>
+      <div className="field full"><label htmlFor="suggestedPrice">Precio orientativo (MXN)</label><input id="suggestedPrice" name="suggestedPrice" type="number" inputMode="decimal" min="0" max="1000000" step="0.01" placeholder="Se completa al pedir una sugerencia" value={suggestedPrice} onChange={(event) => setSuggestedPrice(event.target.value)} {...fieldErrorProps(fieldErrors, "suggestedPrice", "suggestedPrice-hint")} /><span className="hint" id="suggestedPrice-hint">Es una referencia editable, no una tasación, y no cambia tu precio final.</span><FieldError errors={fieldErrors} name="suggestedPrice" />{suggestedRange && <div className="estimate-note" role="status"><strong>Rango orientativo: ${suggestedRange.min}–${suggestedRange.max} MXN</strong><span>{suggestedRange.explanation}</span></div>}</div>
       <div className="field full"><div className="estimate-note" aria-live="polite"><span>Ganancia estimada al precio de venta</span><strong>{estimatedProfit === null ? "Completa costo y precio" : formatMoney(estimatedProfit)}</strong><small>Precio de venta menos costo; no incluye otros gastos.</small></div></div>
     </div></fieldset>
-    <fieldset className="form-section"><legend><span>3</span><strong>Ficha publicable</strong><small>El texto que verá quien abra tu catálogo</small></legend><div className="form-section-body">
-      <div className="field"><label htmlFor="description">Descripción</label><textarea id="description" name="description" required minLength={10} maxLength={1200} placeholder="Describe materiales, medidas y detalles visibles." /></div>
+    <fieldset className="form-section" disabled={pending}><legend><span>3</span><strong>Ficha publicable</strong><small>El texto que verá quien abra tu catálogo</small></legend><div className="form-section-body">
+      <div className="field"><label htmlFor="description">Descripción</label><textarea id="description" name="description" required minLength={10} maxLength={1200} placeholder="Describe materiales, medidas y detalles visibles." {...fieldErrorProps(fieldErrors, "description")} /><FieldError errors={fieldErrors} name="description" /></div>
     </div></fieldset>
     {error && <div className="alert" role="alert">{error}</div>}{notice && <div className="alert success" role="status">{notice}</div>}
     <div className="form-actions">{aiPending ? <button type="button" className="button secondary" onClick={cancelSuggestion}>Cancelar sugerencia</button> : <button type="button" className="button secondary" disabled={pending} onClick={(event) => generate(event.currentTarget.form!)}>Sugerir texto y precio</button>}<button className="button" disabled={pending}>{pending ? "Guardando pieza…" : "Guardar pieza"}</button><span className="hint full" role="status">{aiPending ? "Creando sugerencia… Puedes seguir editando o guardar sin esperar." : "La sugerencia es opcional. Tú decides el texto y el precio final."}</span></div>

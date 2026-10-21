@@ -19,7 +19,7 @@ MVP local para que negocios de artículos de segunda mano administren piezas ún
 - El panel autenticado prioriza `Agregar pieza` en navegación móvil y escritorio; el alta se divide en fotografía e identidad, valor y ficha publicable.
 - Navegación con ruta activa, acceso móvil permanente al catálogo y cierre de sesión, confirmación visible después de registrar una pieza y confirmación previa al cerrar una venta.
 - Diseño mobile first con foco visible, objetivos táctiles, movimiento reducido y estados de carga, error, vacío y éxito.
-- Alta con validación compartida entre navegador y servidor, errores de fotografía asociados al campo y conservación de datos ante errores. La sugerencia puede cancelarse, vence a los 15 segundos y permite guardar sin esperar; conserva el texto y precio propios y descarta respuestas si cambian los datos de la pieza durante la consulta.
+- Alta y acceso con validación compartida entre navegador y servidor, errores asociados a cada campo y foco en el primero inválido. El alta captura todos los datos y la fotografía antes de bloquear los campos durante el guardado; un fallo conserva los valores y permite reintentar. La sugerencia puede cancelarse, vence a los 15 segundos y permite guardar sin esperar; conserva el texto y precio propios y descarta respuestas si cambian los datos de la pieza durante la consulta.
 - Ventas con validación compartida, bloqueo de envíos duplicados y campos bloqueados durante el registro. Un enlace a una pieza no disponible exige elegir otra explícitamente; cambiar el enlace actualiza la selección. Los conflictos por venta concurrente retiran inmediatamente la pieza del selector, vacían la selección y refrescan los datos. Los errores recuperables conservan el importe para reintentar.
 
 ## Documentación de producto
@@ -58,7 +58,7 @@ Abre [http://localhost:3000](http://localhost:3000), crea una cuenta y registra 
 
 ## Persistencia local y serverless
 
-Las fotos se validan en backend (tipo permitido, firma binaria y máximo 5 MB). En desarrollo se guardan en `public/uploads/<businessId>`; cuando existe `BLOB_READ_WRITE_TOKEN`, se guardan en Vercel Blob y `photoPath` conserva la URL pública.
+Las fotos se validan en backend con decodificación completa mediante Sharp: JPEG, PNG o WebP estático, MIME coincidente, máximo 5 MB, 8192 píxeles por lado y 16.777.216 píxeles totales. Se rechazan imágenes truncadas, corruptas y animaciones, incluido APNG. En desarrollo se guardan en `public/uploads/<businessId>`; cuando existe `BLOB_READ_WRITE_TOKEN`, se guardan en Vercel Blob y `photoPath` conserva la URL pública.
 
 La ruta `/uploads/[businessId]/[filename]` sirve las fotos locales creadas después de iniciar el servidor de producción (`next start`), sin requerir reinicios. Solo admite identificadores de negocio y nombres UUID con extensión JPG, PNG o WebP generados por la aplicación; las fotos conservan su acceso público para el catálogo.
 
@@ -115,6 +115,17 @@ En Chromium contra la compilación de producción y SQLite de prueba independien
 - El catálogo consultado sin sesión deja de mostrar las tres piezas vendidas.
 - Sin errores de ejecución JavaScript en el navegador.
 
+### Verificación integrada de mejoras — 20 de octubre de 2026
+
+- `npm run lint`, `npm run typecheck`, `npm test` y `npm run build` aprobados secuencialmente: **137 pruebas en 12 archivos** y compilación de producción correcta.
+- Nuevas regresiones: migraciones atómicas con conservación de datos, rollback e índices; fotografías realmente decodificables, límites y rechazo de APNG; errores de formulario y sesiones cancelables del escáner.
+- **23 comprobaciones aprobadas en Chrome headless mediante CDP**, contra producción con SQLite y fotografías temporales independientes. Ventas sin desbordamiento a 360, 390, 800 y 1024 px; validación y foco; captura multipart antes de bloquear; conservación de foto y datos tras un error y reintento real; fotografía nueva cargada en inventario y catálogo sin reiniciar.
+- Dos pestañas: conflicto de venta real, una sola fila por pieza y retirada pública. Dos ventas produjeron ingresos de 550.75 MXN y ganancia de 450.75 MXN, contrastados con SQLite.
+- IA local real; errores de red, respuestas demoradas y cámara/detector se simularon para verificar recuperación y cancelación. Cero excepciones JavaScript en la ejecución final.
+- La revisión independiente detectó y verificó el cierre del caso APNG con corrupción posterior al primer fotograma. No se verificaron Turso, Blob u OpenAI remotos, cámara física ni accesibilidad asistiva completa.
+
+El informe local detallado está en `artifacts/qa-improvements.md` (directorio ignorado por Git). La evidencia temporal final está en `/tmp/opencode/ss-integral-1792553280786/`; no se garantiza su conservación tras limpiar el entorno. Las herramientas globales cargan dotenv automáticamente, con la base de pruebas y los proveedores explícitamente sobreescritos; el runtime del navegador se ejecutó sin dotenv. Los servidores de prueba quedaron detenidos.
+
 ## Estructura
 
 - `src/app/(auth)`: registro e inicio de sesión.
@@ -126,7 +137,9 @@ En Chromium contra la compilación de producción y SQLite de prueba independien
 
 ## Operación
 
-`npm run db:push` crea o actualiza de forma idempotente la base SQLite local usando las migraciones versionadas. `npm run db:init:turso` aplica el mismo flujo a Turso. La migración de referencias reconstruye `Product` de forma compatible con SQLite, conserva filas existentes y las rellena con una referencia derivada de su ID; las altas nuevas reciben referencias aleatorias desde el backend. Antes de migrar datos reales, conserva respaldos de la base y del almacén Blob.
+`npm run db:push` crea o actualiza de forma idempotente la base SQLite local usando las migraciones versionadas. `npm run db:init:turso` aplica el mismo flujo a Turso. La migración de referencias reconstruye `Product`, conserva filas existentes y las rellena con una referencia derivada de su ID; las altas nuevas reciben referencias aleatorias desde el backend.
+
+El ejecutor aplica los cambios dentro de una transacción, comprueba las definiciones de tablas e índices y verifica las claves foráneas antes de confirmar. Los índices ausentes se reconstruyen; esquemas parciales o incompatibles se rechazan sin borrar sus datos. La atomicidad, rollback y reintento se prueban con SQLite local; la secuencia contra Turso remoto requiere comprobación independiente. Antes de migrar datos reales, conserva respaldos de la base y del almacén Blob y usa una ventana de mantenimiento sin escrituras concurrentes. Contrato y límites en [`scripts/database-migration.md`](scripts/database-migration.md).
 
 El despliegue Vercel requiere enlazar un recurso Turso y un almacén Blob públicos. Los recursos pueden crearse con Vercel CLI:
 
