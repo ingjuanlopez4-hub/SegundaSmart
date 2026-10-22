@@ -7,13 +7,13 @@ import { requireUser } from "@/lib/auth";
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const user = await requireUser();
   return <>
-    <div className="direction-contract" aria-hidden="true" dangerouslySetInnerHTML={{ __html: "<!-- THESIS: Cada producto entra como una pieza irrepetible; rechaza el dashboard SaaS de tarjetas. OWN-WORLD: Azul archivo, blanco frio, grafito y coral; fichas, bandas de ingreso y sellos de estado. STORY: La persona identifica el estado del negocio y registra una pieza sin perder contexto. FIRST VIEWPORT: Mesa de trabajo con pregunta operativa, accion de alta dominante y tira contable. FORM: Registro de procedencia, candidato seis, mesa de catalogacion, seed 17e9fa05. -->" }} />
+    <div className="direction-contract" aria-hidden="true" dangerouslySetInnerHTML={{ __html: "<!-- THESIS: Un mostrador digital conecta cada hallazgo con su proxima venta; la tarea precede al adorno. OWN-WORLD: Verde bosque, menta clara y blanco; tipografia humanista, fotografias completas, controles suaves y cifras tabulares. STORY: Revisar disponibilidad, registrar una pieza, vender o compartir el catalogo desde un mismo espacio. FIRST VIEWPORT: Encabezado compacto con alta, balance acumulado y lista de piezas reales junto al acceso al catalogo. FORM: Mostrador de tienda de barrio, candidato cuatro, lista operativa y escaparate lateral; seed 3dd0c398. -->" }} />
     <div className="app-shell">
       <aside className="app-rail">
         <Brand />
-        <div className="business-stamp"><span>Espacio de trabajo</span><strong title={user.business.name}>{user.business.name}</strong></div>
+        <div className="business-stamp"><span>Mi negocio</span><strong title={user.business.name}>{user.business.name}</strong></div>
         <AppNavigation />
-        <div className="rail-footer"><Link href={`/catalogo/${user.business.slug}`} target="_blank">Abrir catálogo <span aria-hidden="true">↗</span></Link><LogoutButton /></div>
+        <div className="rail-footer"><span className="rail-caption">Tu escaparate digital</span><Link href={`/catalogo/${user.business.slug}`} target="_blank">Ver catálogo público <span aria-hidden="true">↗</span></Link><LogoutButton /></div>
       </aside>
       <div className="app-stage">
         <header className="app-header"><Brand /><span className="business-name" title={user.business.name}>{user.business.name}</span><div className="header-actions"><Link href={`/catalogo/${user.business.slug}`} target="_blank">Catálogo <span aria-hidden="true">↗</span></Link><LogoutButton /></div></header>

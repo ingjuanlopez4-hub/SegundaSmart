@@ -15,9 +15,10 @@ MVP local para que negocios de artículos de segunda mano administren piezas ún
 
 ## Experiencia de interfaz
 
-- Sistema visual "Registro de procedencia": cada producto se presenta como una ficha de una pieza única, con estado, referencia y acciones operativas visibles.
-- El panel autenticado prioriza `Agregar pieza` en navegación móvil y escritorio; el alta se divide en fotografía e identidad, valor y ficha publicable.
-- Navegación con ruta activa, acceso móvil permanente al catálogo y cierre de sesión, confirmación visible después de registrar una pieza y confirmación previa al cerrar una venta.
+- Sistema visual "Mostrador de hallazgos": verde bosque (#20634c), fondo #f6f8f6, blanco y menta; fuentes locales Segoe UI / Helvetica Neue / Arial sin Google Fonts, cifras tabulares, controles suaves, superficies redondeadas y marca de ciclo de flechas.
+- El panel autenticado reúne balance acumulado real del negocio, hasta cuatro piezas disponibles recientes con venta directa y catálogo compartible por WhatsApp y Facebook. Balance de dos columnas en móvil y cuatro desde 1120px; lista y escaparate lateral desde 1200px.
+- `Agregar pieza` permanece visible en navegación móvil fija y rail blanco de escritorio, con texto blanco sobre verde incluso activo. El alta usa tres secciones numeradas con encabezados horizontales en todos los tamaños: Conoce la pieza, Valor y Ficha publicable. Fotografías completas con `contain` en alta, inventario, resumen y catálogo.
+- Navegación con ruta activa, acceso móvil permanente al catálogo y cierre de sesión, confirmación visible después de registrar una pieza y confirmación previa al cerrar una venta. En ventas con producto en URL, formulario e historial preceden al balance y la búsqueda; sin producto en URL, se muestra primero el balance compacto de tres columnas y la búsqueda.
 - Diseño mobile first con foco visible, objetivos táctiles, movimiento reducido y estados de carga, error, vacío y éxito.
 - Alta y acceso con validación compartida entre navegador y servidor, errores asociados a cada campo y foco en el primero inválido. El alta captura todos los datos y la fotografía antes de bloquear los campos durante el guardado; un fallo conserva los valores y permite reintentar. La sugerencia puede cancelarse, vence a los 15 segundos y permite guardar sin esperar; conserva el texto y precio propios y descarta respuestas si cambian los datos de la pieza durante la consulta.
 - Ventas con validación compartida, bloqueo de envíos duplicados y campos bloqueados durante el registro. Un enlace a una pieza no disponible exige elegir otra explícitamente; cambiar el enlace actualiza la selección. Los conflictos por venta concurrente retiran inmediatamente la pieza del selector, vacían la selección y refrescan los datos. Los errores recuperables conservan el importe para reintentar.
@@ -76,6 +77,15 @@ Prisma usa SQLite local cuando no existe `TURSO_DATABASE_URL` y cambia al adapta
 - Las sugerencias locales y sus rangos respetan el máximo de 1,000,000 MXN. El rango siempre contiene el precio sugerido, incluso para importes de centavos. Respuestas IA con descripción vacía, precio no finito o que se redondea a cero activan la alternativa local.
 
 ## Verificación
+
+### Rediseño UI/UX — 21 de octubre de 2026
+
+- Nueva dirección **Mostrador de hallazgos** aplicada a navegación, resumen, inventario, alta, ventas, acceso y catálogo; sistema documentado en `DESIGN.md` y `.impeccable/design.json`.
+- `npm run lint`, `npm run typecheck`, `npm test` y `npm run build` aprobados después de las correcciones: **140 pruebas en 13 archivos**.
+- **36 comprobaciones en Chrome headless mediante CDP**, contra la compilación de producción con SQLite independiente: seis pantallas sin desbordamiento a 360, 390, 800 y 1440 px; balance desktop de cuatro columnas; contraste de la pestaña de alta activa; filtros y búsqueda enlazables.
+- Alta real desde el formulario móvil, validación con foco, venta con pieza e importe preseleccionados visibles desde el primer viewport, confirmación de venta y retirada del resumen y catálogo público. Sin excepciones JavaScript durante la ejecución.
+- Dos pasadas de capturas móvil/escritorio y revisión independiente. Evidencia local en `artifacts/ui-qa.json`, `artifacts/ui-dashboard-390.png`, `artifacts/ui-dashboard-1440.png` y `artifacts/ui-sale-focused-390.png`. El directorio de evidencia está ignorado por Git.
+- Las fotografías sintéticas y piezas de verificación se usaron exclusivamente como fixtures en una base temporal (`/tmp/opencode/ss-ui.db`); la interfaz consulta los datos persistidos de cada negocio. La comprobación responsive se hizo en navegador emulado, sin cámara física ni lector de pantalla.
 
 ```bash
 npm run lint

@@ -18,6 +18,32 @@ export default async function SalesPage({ searchParams }: { searchParams: Promis
     getSalesMetrics(db, user.businessId),
   ]);
   const { sales, page, totalPages } = await getSalesPage(db, user.businessId, parseSalesPage(params.pagina), metrics.count);
+  const balance = <section className="ledger" aria-label="Resultados acumulados">
+    <div><span>Ventas</span><strong>{metrics.count}</strong></div>
+    <div><span>Ingresos</span><strong>{formatMoney(metrics.revenue)}</strong></div>
+    <div><span>Ganancia</span><strong>{formatMoney(metrics.profit)}</strong></div>
+  </section>;
+  const search = <ProductSearch initialQuery={query} />;
 
-  return <main id="contenido" className="page stack page-content sales-page"><header className="page-heading"><div><p className="kicker">Caja</p><h1>Ventas y ganancias</h1><p className="muted">Cierra una pieza disponible y conserva su resultado en el historial.</p></div></header>{params.venta === "1" && <FlashNotice param="venta"><strong>Venta registrada.</strong> La pieza ya no aparece en el catálogo público.</FlashNotice>}<section className="ledger" aria-label="Resultados acumulados"><div><span>Ventas</span><strong>{metrics.count}</strong></div><div><span>Ingresos</span><strong>{formatMoney(metrics.revenue)}</strong></div><div><span>Ganancia</span><strong>{formatMoney(metrics.profit)}</strong></div></section><ProductSearch initialQuery={query} /><div className="sales-layout"><section aria-labelledby="registrar"><div className="section-heading"><h2 id="registrar">Registrar venta</h2><span>{products.length} disponibles</span></div>{query && products.length === 0 ? <div className="panel"><h3>Sin piezas disponibles</h3><p className="muted">No encontramos una pieza disponible con ese nombre, referencia o QR.</p><Link className="button secondary" href="/app/ventas">Limpiar búsqueda</Link></div> : <SaleForm key={products.map((product) => product.id).join(",")} products={products} initialId={params.producto} />}</section><section aria-labelledby="historial"><div className="section-heading"><h2 id="historial">Historial</h2><span>{metrics.count} ventas</span></div>{sales.length === 0 ? <div className="empty-inline"><p>Aún no hay ventas.</p><span className="muted">Las ventas confirmadas aparecerán aquí.</span></div> : <div className="sale-list">{sales.map((sale) => <article className="sale-row" key={sale.id}><div><strong>{sale.product.name}</strong><div className="muted"><time dateTime={sale.soldAt.toISOString()}>{sale.soldAt.toLocaleDateString("es-MX")}</time><span>Ganancia {formatMoney(sale.amountCents - sale.product.costCents)}</span></div></div><span className="price">{formatMoney(sale.amountCents)}</span></article>)}{totalPages > 1 && <nav className="pagination" aria-label="Páginas del historial de ventas">{page > 1 && <Link className="button secondary" href={`/app/ventas?pagina=${page - 1}`}>Más recientes</Link>}<span className="muted" aria-current="page">{page} de {totalPages}</span>{page < totalPages && <Link className="button secondary" href={`/app/ventas?pagina=${page + 1}`}>Anteriores</Link>}</nav>}</div>}</section></div></main>;
+  return <main id="contenido" className="page stack page-content sales-page">
+    <header className="page-heading"><div><p className="kicker">Caja</p><h1>Ventas y ganancias</h1><p className="muted">Registra una venta. Tu inventario y catálogo se actualizan al instante.</p></div></header>
+    {params.venta === "1" && <FlashNotice param="venta"><strong>Venta registrada.</strong> La pieza ya no aparece en el catálogo público.</FlashNotice>}
+    {!params.producto && <>{balance}{search}</>}
+    <div className="sales-layout">
+      <section aria-labelledby="registrar">
+        <div className="section-heading"><h2 id="registrar">Registrar venta</h2><span>{products.length} disponibles</span></div>
+        {query && products.length === 0 ? <div className="panel"><h3>Sin piezas disponibles</h3><p className="muted">No encontramos una pieza disponible con ese nombre, referencia o QR.</p><Link className="button secondary" href="/app/ventas">Limpiar búsqueda</Link></div> : <SaleForm key={products.map((product) => product.id).join(",")} products={products} initialId={params.producto} />}
+      </section>
+      <section aria-labelledby="historial">
+        <div className="section-heading"><h2 id="historial">Historial</h2><span>{metrics.count} ventas</span></div>
+        {sales.length === 0 ? <div className="empty-inline"><p>Aún no hay ventas.</p><span className="muted">Las ventas confirmadas aparecerán aquí.</span></div> : <div className="sale-list">{sales.map((sale) => <article className="sale-row" key={sale.id}><div><strong>{sale.product.name}</strong><div className="muted"><time dateTime={sale.soldAt.toISOString()}>{sale.soldAt.toLocaleDateString("es-MX")}</time><span>Ganancia {formatMoney(sale.amountCents - sale.product.costCents)}</span></div></div><span className="price">{formatMoney(sale.amountCents)}</span></article>)}</div>}
+        {totalPages > 1 && <nav className="pagination" aria-label="Páginas del historial">
+          {page > 1 ? <Link className="button secondary" href={`/app/ventas?pagina=${page - 1}${query ? `&q=${encodeURIComponent(query)}` : ""}`}>Anterior</Link> : <span />}
+          <span className="muted">Página {page} de {totalPages}</span>
+          {page < totalPages ? <Link className="button secondary" href={`/app/ventas?pagina=${page + 1}${query ? `&q=${encodeURIComponent(query)}` : ""}`}>Siguiente</Link> : <span />}
+        </nav>}
+      </section>
+    </div>
+    {params.producto && <>{balance}{search}</>}
+  </main>;
 }

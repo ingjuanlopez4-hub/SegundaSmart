@@ -1,234 +1,225 @@
 ---
 name: SegundaSmart
-description: Registro operativo de piezas únicas para inventario, catálogo y venta.
+description: Mostrador de hallazgos para administrar piezas únicas, ventas y catálogo compartible.
 colors:
-  archive-blue: "#1646a0"
-  archive-blue-dark: "#0d327a"
-  archive-blue-soft: "#dce8ff"
-  cold-paper: "#f4f7fb"
-  white-sheet: "#ffffff"
-  graphite: "#171b24"
-  muted-slate: "#596476"
-  ledger-line: "#cbd5e3"
-  intake-coral: "#ff6b4a"
-  intake-coral-dark: "#b9321f"
-  sold-plum: "#6c3b64"
-  danger-red: "#a52620"
-  success-green: "#176447"
+  forest: "#20634c"
+  forest-dark: "#154b39"
+  mint: "#e7f1eb"
+  canvas: "#f6f8f6"
+  white: "#ffffff"
+  ink: "#203b30"
+  muted: "#5d6c63"
+  line: "#dce4dd"
+  field-border: "#a9b8ad"
+  sold: "#635479"
+  sold-soft: "#efe4ed"
+  danger: "#a52620"
+  success: "#176447"
+  catalog-surface: "#e9f0df"
+  catalog-sign: "#d9e7c8"
 typography:
   display:
-    fontFamily: "Archivo Black, Arial Black, sans-serif"
-    fontSize: "clamp(2.6rem, 8vw, 5.5rem)"
-    fontWeight: 400
-    lineHeight: 0.98
-    letterSpacing: "-0.025em"
+    fontFamily: '"Segoe UI", "Helvetica Neue", Arial, sans-serif'
+    fontSize: "clamp(1.9rem, 4vw, 2.7rem)"
+    fontWeight: 650
+    lineHeight: 1.15
+    letterSpacing: "-0.03em"
   headline:
-    fontFamily: "Archivo Black, Arial Black, sans-serif"
-    fontSize: "clamp(1.65rem, 4vw, 2.7rem)"
-    fontWeight: 400
-    lineHeight: 0.98
-    letterSpacing: "-0.025em"
+    fontFamily: '"Segoe UI", "Helvetica Neue", Arial, sans-serif'
+    fontSize: "clamp(1.35rem, 3vw, 1.7rem)"
+    fontWeight: 650
+    lineHeight: 1.15
+    letterSpacing: "-0.03em"
+  title:
+    fontFamily: '"Segoe UI", "Helvetica Neue", Arial, sans-serif'
+    fontSize: "1.05rem"
+    fontWeight: 650
+    lineHeight: 1.3
+    letterSpacing: "-0.015em"
   body:
-    fontFamily: "Chivo, Arial, sans-serif"
+    fontFamily: '"Segoe UI", "Helvetica Neue", Arial, sans-serif'
     fontSize: "1rem"
     fontWeight: 400
     lineHeight: 1.55
   label:
-    fontFamily: "Azeret Mono, monospace"
-    fontSize: "0.72rem"
-    fontWeight: 700
+    fontFamily: '"Segoe UI", "Helvetica Neue", Arial, sans-serif'
+    fontSize: "0.8rem"
+    fontWeight: 600
     lineHeight: 1.55
-    letterSpacing: "0.075em"
 rounded:
-  field: "0.3rem"
-  control: "0.35rem"
+  badge: "0.35rem"
+  field: "0.6rem"
+  control: "0.65rem"
+  brand: "0.7rem"
+  surface: "0.9rem"
+  auth: "1rem"
 spacing:
   field-gap: "0.4rem"
   compact: "0.75rem"
-  control-x: "1rem"
+  content: "1rem"
   section: "1.25rem"
   roomy: "1.5rem"
+  workspace: "2rem"
 components:
   button-primary:
-    backgroundColor: "{colors.archive-blue}"
-    textColor: "{colors.white-sheet}"
+    backgroundColor: "{colors.forest}"
+    textColor: "{colors.white}"
     rounded: "{rounded.control}"
-    padding: "0.72rem 1rem"
+    padding: "0.8rem 1.1rem"
   button-primary-hover:
-    backgroundColor: "{colors.archive-blue-dark}"
-    textColor: "{colors.white-sheet}"
+    backgroundColor: "{colors.forest-dark}"
+    textColor: "{colors.white}"
   button-secondary:
-    backgroundColor: "transparent"
-    textColor: "{colors.archive-blue}"
+    backgroundColor: "{colors.white}"
+    textColor: "{colors.forest}"
     rounded: "{rounded.control}"
-    padding: "0.72rem 1rem"
+    padding: "0.8rem 1.1rem"
   field:
-    backgroundColor: "{colors.white-sheet}"
-    textColor: "{colors.graphite}"
+    backgroundColor: "{colors.white}"
+    textColor: "{colors.ink}"
     rounded: "{rounded.field}"
     padding: "0.75rem 0.85rem"
   status-available:
-    backgroundColor: "{colors.archive-blue-soft}"
-    textColor: "{colors.archive-blue-dark}"
-    typography: "{typography.label}"
-    padding: "0.18rem 0.42rem"
-  intake-action:
-    backgroundColor: "{colors.intake-coral}"
-    textColor: "{colors.graphite}"
-    padding: "1.4rem"
+    backgroundColor: "{colors.mint}"
+    textColor: "{colors.forest-dark}"
+    rounded: "{rounded.badge}"
+    padding: "0.2rem 0.55rem"
+  surface:
+    backgroundColor: "{colors.white}"
+    textColor: "{colors.ink}"
+    rounded: "{rounded.surface}"
 ---
 
 # Design System: SegundaSmart
 
 ## Overview
 
-**Creative North Star: "Registro de procedencia"**
+**Creative North Star: "Mostrador de hallazgos"**
 
-SegundaSmart treats every product as an irrepeatable accession record. Archive blue, cold paper, graphite, and coral turn inventory work into a clear intake desk: numbered cataloging bands establish order, monospace metadata identifies records, and compact status stamps make availability unequivocal.
+Un mostrador digital de tienda de barrio conecta cada hallazgo con su próxima venta. Verde bosque, blanco y menta acompañan fotografías completas, controles suaves y texto cotidiano. La tarea precede al adorno: revisar piezas, registrar una nueva, vender y compartir el catálogo.
 
-The system is operational rather than dashboard-like. The owner first sees the question that matters, a dominant path to register the next piece, and a restrained accounting strip; surrounding navigation keeps the business and public catalog in context. Generic SaaS card dashboards are explicitly rejected in favor of bordered records, ledgers, and intake tables.
+La fuente de los tokens es `src/app/globals.css`. Los nombres heredados de algunas variables CSS no definen la identidad actual: `--archive` y `--coral` resuelven ambos al verde bosque; sus variantes oscuras también coinciden. El sidecar `.impeccable/design.json` (schemaVersion 2) extiende este frontmatter con metadatos, sombras, movimiento, breakpoints y ejemplos de componentes.
 
 **Key Characteristics:**
-- Archive-like, high-contrast working surfaces.
-- One dominant coral intake action against an archive-blue field.
-- Accession IDs, accounting figures, and labels set in monospace.
-- Square record structures with only gently rounded controls.
-- Mobile-first continuity from bottom navigation to desktop rail.
+- Verde bosque para acciones y orientación; blanco y menta para trabajar.
+- Tipografía local humanista, con cifras tabulares en precios y balance.
+- Superficies redondeadas y delimitadas por líneas suaves.
+- Fotografías completas de piezas únicas, sin recorte decorativo.
+- Marca de ciclo de flechas y continuidad entre navegación móvil y lateral.
 
 ## Colors
 
-The palette separates the archive, its cold paper records, and the coral moment of intake; semantic colors remain restrained and textual.
+La paleta combina un acento vegetal sobrio con fondos claros y estados escritos.
 
 ### Primary
-- **Archive Blue:** Owns the rail, intake bands, hero field, primary controls, and active state.
-- **Archive Blue Dark:** Deepens hover states and supplies legible text on pale-blue stamps.
-- **Archive Blue Soft:** Marks quiet selected, empty, image-placeholder, and available-status surfaces.
+- **Forest:** Verde bosque para botones principales, enlaces, marca y orientación activa.
+- **Forest Dark:** Hover, foco visible y texto sobre menta.
+- **Mint:** Selección discreta, disponibilidad, pozos de imagen y apoyos del formulario.
 
 ### Secondary
-- **Intake Coral:** Reserved for adding a piece, the brand index, and entry labels that must interrupt the archive field.
-- **Intake Coral Dark:** Supplies the global visible-focus outline rather than decorative fill.
+- **Catalog Surface / Catalog Sign:** Verdes claros más cálidos que distinguen la invitación al catálogo y su rótulo de escaparate.
 
 ### Tertiary
-- **Sold Plum:** Identifies sold records without competing with the intake action.
-- **Danger Red:** Marks destructive or failed states.
-- **Success Green:** Marks successful completion in notices.
+- **Sold / Sold Soft:** Estado vendido en violeta y fondo tenue.
+- **Danger / Success:** Estados semánticos de error y éxito, acompañados por mensajes explícitos.
 
 ### Neutral
-- **Cold Paper:** The application canvas and sticky translucent action backdrop.
-- **White Sheet:** Record, form, navigation, and catalog surfaces.
-- **Graphite:** Primary text and the ink used on coral.
-- **Muted Slate:** Supporting copy, business context, and record IDs.
-- **Ledger Line:** Divides accounting cells, cards, fields, and navigation.
+- **Canvas:** Fondo general ligeramente verdoso.
+- **White:** Navegación, formularios, balance y fichas.
+- **Ink / Muted:** Texto principal y contexto secundario.
+- **Line / Field Border:** Separadores suaves y contorno más definido de campos.
 
-### Named Rules
-
-**The Coral Intake Rule.** Coral signals entry into the archive; do not distribute it across routine metrics or secondary actions.
-
-**The Status Is Written Rule.** Availability and sale state always include a text stamp; color never carries status alone.
+**The Written State Rule.** Disponible, vendida, error y éxito siempre se expresan con texto; el color acompaña el estado.
 
 ## Typography
 
-**Display Font:** Archivo Black (with Arial Black fallback)
-**Body Font:** Chivo (with Arial fallback)
-**Label/Mono Font:** Azeret Mono (with monospace fallback)
+**Display / Body / Utility Font:** Segoe UI, Helvetica Neue, Arial, sans-serif. Las tres variables tipográficas usan esta misma pila local. El layout raíz importa el CSS y no carga Google Fonts.
 
-**Character:** Archivo Black gives operational questions and section names the authority of archive headings. Chivo remains plainspoken and readable, while Azeret Mono makes IDs, prices, counts, and labels feel recorded rather than decorated.
+La jerarquía usa tamaño, peso y espaciado, sin separar metadatos mediante una familia monoespaciada. Los fallbacks `monospace` que aún aparecen en algunas reglas utilitarias no reemplazan la pila local definida.
 
 ### Hierarchy
-- **Display** (400, fluid from 2.6rem to 5.5rem, 0.98): Page questions and names; the dashboard question may expand to 6rem.
-- **Headline** (400, fluid from 1.65rem to 2.7rem, 0.98): Section and empty-state headings.
-- **Title** (400, 1.15rem, 1.1): Product names inside compact records.
-- **Body** (400, 1rem, 1.55): Instructions and descriptions, generally constrained to about 60-62 characters.
-- **Label** (700, 0.72rem, 0.075em, uppercase): Kickers, record metadata, ledger captions, navigation markers, and intake annotations.
+- **Display:** Título de página fluido del frontmatter. El resumen usa 1.75rem por debajo de 560px y 2.5rem desde 1200px; inventario usa 2.5rem. La ficha pública conserva un título mayor, `clamp(2.2rem, 7vw, 4.5rem)`.
+- **Headline / Title:** Secciones y nombres de pieza; encabezados de sección operativa a 1.25rem y leyendas de alta a 1rem.
+- **Body:** Lectura a interlineado 1.55, instrucciones y descripciones; los textos de encabezado se limitan a 62ch.
+- **Label:** Kickers discretos, sin mayúsculas ni tracking de archivo obligatorios. Etiquetas de campo a 0.88rem y peso 700; badges a 0.7rem y peso 600.
+- **Price / Balance:** Peso 650, cifras tabulares mediante `font-variant-numeric: tabular-nums`. Precio base a 1.28rem; variantes compactas en inventario y lista reciente. Balance fluido entre 1.4rem y 2rem, con ajuste móvil propio en ventas.
 
-### Named Rules
-
-**The Recorded Data Rule.** Use Azeret Mono for accession data and accounting signals, not for prose or primary actions.
+**The Tabular Figures Rule.** Precios y totales se alinean con cifras tabulares de la familia local, sin introducir una fuente remota o monoespaciada.
 
 ## Layout
 
-The system is mobile first. Content uses a centered 1160px maximum with 1rem side gutters on narrow screens and 1.5rem gutters in the desktop app. Pages stack at a 1.25rem rhythm and reserve 6.5rem at the bottom for fixed navigation.
+Mobile first: contenedor centrado con máximo de 1160px, márgenes laterales de 1rem y ritmo principal de 1.25rem. Las páginas reservan 6.5rem inferiores para la navegación fija. El alta limita su ancho a 960px.
 
-Below 560px, product records pair a 112-118px image column with a flexible record body and let actions span the full width. At 560px, records become a two-column grid, forms become two-column tables, and paired actions share a row. At 800px, the bottom navigation and sticky header give way to a 238px archive rail; cataloging sections become a 220px intake band beside their fields, and form actions remain sticky near the viewport edge. At 1120px, the rail grows to 270px, products use three columns, and ledgers use four cells.
-
-The dashboard first viewport is one continuous workbench: operational question and context on archive blue, dominant intake action on coral, then a directly attached accounting strip. It is not a collection of independent metric cards.
+- **Desde 560px de viewport:** Grilla pública de dos columnas, campos de alta en dos columnas y acciones emparejadas. La lista reciente separa foto, información y acción en tres columnas; por debajo, precio y venta ocupan una fila completa bajo la información.
+- **Desde 800px:** La cabecera móvil y la barra inferior dejan paso a una navegación lateral blanca de 224px. El contenido usa márgenes de 1.5rem y padding vertical de 2.5rem. Las secciones de alta mantienen encabezados horizontales; solo aumentan sus paddings. Las acciones del alta se vuelven sticky a 1rem del borde inferior.
+- **Desde 1120px:** Rail de 244px, balance del resumen en cuatro columnas y grilla pública en tres. El balance del resumen usa dos columnas por debajo de este umbral, incluido móvil.
+- **Desde 1200px:** Lista reciente y escaparate del catálogo se colocan lado a lado, con columna lateral de 290px y separación de 2rem. Por debajo, se apilan.
+- **Inventario por ancho útil:** Container queries a 560px para dos columnas y a 960px para tres. Por debajo usa fichas horizontales con foto de 112px. El rail puede reducir el ancho útil y devolver la grilla a una columna.
+- **Ventas por ancho útil:** Una columna hasta 720px de contenedor; desde allí, formulario e historial en dos columnas. Su balance compacto mantiene tres columnas, también en móvil y escritorio ancho.
 
 ## Elevation & Depth
 
-The application is flat by default. Borders and tonal fields establish structure; the only ambient elevation is the authentication sheet, while the mobile bottom navigation uses a shallow upward shadow to separate a fixed control from scrolling content. Sticky headers and actions use a nearly opaque cold-paper surface rather than stronger elevation.
+Fondos blancos, campos de menta y líneas de un píxel separan superficies sin hacer flotar cada ficha. Las esquinas suaves aportan cercanía sin sustituir la estructura. La autenticación usa la sombra ambiental `0 18px 48px rgb(28 60 44 / 9%)`; la navegación móvil conserva `0 -10px 28px rgb(20 38 75 / 8%)` para separarse del contenido que desplaza.
 
-### Shadow Vocabulary
-- **Authentication Sheet:** A broad, cool ambient shadow gives the sign-in sheet temporary document depth.
-- **Mobile Navigation Lift:** A low-opacity upward shadow separates the fixed bottom bar from inventory records.
-
-### Named Rules
-
-**The Flat Archive Rule.** Records, ledgers, panels, and form sections remain flat and bordered at rest; do not turn them into floating cards.
+Botones: transición de fondo, borde y posición a 180ms ease-out; campos: borde y halo a 160ms ease-out. El espacio de trabajo del resumen entra con un desplazamiento vertical de 8px a 0 en 350ms, `cubic-bezier(.16, 1, .3, 1)`. La preferencia de movimiento reducido acorta transiciones y animaciones a .01ms y elimina desplazamiento de scroll animado.
 
 ## Shapes
 
-Records, ledger cells, intake heroes, side rails, and cataloging tables are square. Fields and buttons use only gently curved corners, while status stamps remain rectangular. The signature exceptions are clipped coral entry shapes: the `SS` brand index has a pointed right edge, and the mobile add tab has a centered notch that rises above the navigation line.
+Controles suaves y superficies redondeadas según el frontmatter: campos y carga de foto, botones y navegación, luego fichas, balance, paneles y secciones. Los badges son pequeños rectángulos suavizados. Los números del alta viven en círculos de 2rem sobre menta.
 
-Dashed borders are reserved for the photograph intake target. Solid one-pixel lines organize all other sheets and records.
+La marca muestra un ciclo de dos flechas blancas dentro de un cuadrado verde redondeado de 2.2rem; `Segunda` usa tinta y `Smart` verde con menor peso. No usa las antiguas iniciales recortadas. La carga de foto y el vacío del resumen usan borde discontinuo; las superficies de trabajo usan borde sólido.
 
 ## Components
 
 ### Buttons
-- **Shape:** Compact, gently curved controls with a 46px minimum touch height.
-- **Primary:** Archive-blue fill, white text, archive-blue border, bold Chivo, and compact horizontal padding.
-- **Hover / Focus:** Hover deepens to dark archive blue; active moves down 1px; keyboard focus uses a 3px dark-coral outline offset by 3px.
-- **Secondary:** Transparent sheet with archive-blue text and border; hover fills with soft archive blue.
-- **Danger / Disabled:** Danger uses the semantic red fill. Disabled controls reduce opacity and show a waiting cursor while their label changes to the pending action.
-
-### Chips
-- **Style:** Status stamps use pale archive blue with dark-blue uppercase mono text; sold stamps shift to a pale plum field and plum text.
-- **State:** Copy is always explicit: `Disponible` or `Vendida`.
-
-### Cards / Containers
-- **Corner Style:** Square accession records.
-- **Background:** White sheets on cold paper; image wells use soft archive blue.
-- **Shadow Strategy:** None at rest; separation comes from the ledger line.
-- **Border:** One-pixel ledger line around each record.
-- **Internal Padding:** 1rem in record bodies and panels.
-- **Behavior:** Mobile records are horizontal; wider records stack a 4:3 image over metadata. Private records add QR and sale actions, and sold records omit the sale action.
-
-### Inputs / Fields
-- **Style:** White field, 50px minimum height, muted blue-gray stroke, and a gentle field radius. Textareas begin at 150px and resize vertically.
-- **Focus:** Archive-blue border plus a 3px soft-blue halo; the invisible photo input exposes a dark-coral outer focus outline through its container.
-- **Error / Disabled:** Errors and successes appear as bordered tinted notices with `alert` or `status` semantics. Pending controls remain disabled and state what is happening.
+- Primario verde con texto blanco, borde del mismo acento, peso 600, altura mínima de 46px y padding del frontmatter.
+- Hover verde oscuro; active desplaza 1px hacia abajo. Foco global con outline de 3px verde oscuro y offset de 3px.
+- Secundario blanco, texto verde y borde suave; hover menta. La variante del escaparate es transparente con borde verde tenue.
+- Peligro rojo; disabled a opacidad .55 y cursor de espera. Las etiquetas pendientes explican la acción en curso.
 
 ### Navigation
 
-Mobile navigation is a four-column fixed bottom bar with 54px targets and a 66px coral add tab. Simple outlined icons accompany persistent text labels; the current link also has a pale-blue field and top rule, not color alone. At 800px it becomes a full-height archive-blue rail with the same icons and labels: the active row becomes a white sheet, and the coral add row remains visually dominant. The rail scrolls on short viewports and has white keyboard focus outlines. Business identity wraps instead of being truncated; on mobile it occupies a second header row. Catalog/logout actions stay visible in both modes, with at least 44px targets.
+Cuatro rutas con iconos delineados y etiquetas persistentes. En móvil, barra blanca fija con targets de 54px y espacio para el safe area. Las rutas activas ordinarias reciben menta; `Agregar pieza` mantiene texto blanco sobre verde, incluso activo, cuando el fondo se oscurece. No hay pestaña coral ni muesca elevada.
 
-### Inventory workbench
+En escritorio, rail blanco de altura de viewport con scroll propio. La fila activa usa menta; agregar sigue siendo blanco sobre verde y, activo, suma un contorno interior tenue. Nombre del negocio con salto de línea; catálogo y cierre de sesión permanecen disponibles en cabecera móvil o pie del rail. Los accesos auxiliares tienen altura mínima de 44px.
 
-Inventory is an operational exception to the large display heading and viewport-driven public grid described above. Its heading stays at 2.5rem, with no extra bottom margin; coral identifies `Agregar pieza`. Search, status filters and results follow immediately. `Todas`, `Disponibles` and `Vendidas` are real URL links with a 48px minimum height, an explicit current state and query-scoped counts. Both searching and clearing preserve the selected status. Results are newest-first, interleaving statuses only in `Todas`; written stamps keep each piece unambiguous.
+### Balance y resumen
 
-The private grid uses the **content container**: one column below 560px useful width, two from 560px and three from 960px. At the 800px rail breakpoint this deliberately returns to one column. Horizontal records have a 112px image well; vertical records have a 4:3 well. Private photos use `contain` so a unique piece is not cropped. Actions are a separate full-width footer: `Registrar venta` first, then sharing and QR. Sold records have no sale/public action. All footer targets are at least 46px high. Images include a recoverable error state; prices explicitly include MXN.
+El resumen presenta encabezado compacto con `Agregar pieza`, balance de cuatro datos reales y espacio de trabajo de mercancía/catálogo. El balance contiene piezas disponibles, piezas vendidas, ingresos acumulados y ganancia acumulada. No representa evolución por periodo, proyecciones ni porcentajes de crecimiento.
 
-Inventory supporting text uses the existing compact 0.85rem body step; horizontal and vertical prices use 1.05rem and 1.2rem respectively, with a 0.72rem currency label. These are intentional operational sizes, not a new display scale. Coral hover reuses the existing #ff8268 intake hover. Empty states distinguish no inventory, no matches and no pieces in a status, with a real next action. Route loading is a static record placeholder with a status announcement, without animation; route errors explain that data is unchanged and offer retry.
+La lista consulta hasta cuatro piezas disponibles más recientes del negocio autenticado, ordenadas por fecha de alta descendente. Muestra foto completa, disponibilidad, nombre enlazado a ficha pública, categoría, condición, precio en MXN y `Registrar venta` con producto en la URL. El vacío ofrece registrar la primera pieza. El escaparate abre el catálogo real del negocio y permite compartirlo en WhatsApp y Facebook; las piezas vendidas se retiran del catálogo.
 
-### Intake Table
+### Fichas y fotografías
 
-The product form behaves like museum cataloging rather than a generic settings form. Three bordered fieldsets are numbered `1-3`; each archive-blue legend names the record stage and explains it. On desktop the legend becomes a fixed-width vertical band, while on mobile it becomes a horizontal header. Photograph and identity come first, value second, and public description third. Suggestion output remains editable, reports whether it came from AI or the local fallback, and never blocks manual completion.
+Fichas blancas con borde suave, estado escrito, referencia cuando corresponde y precio. Fotografías con `object-fit: contain` en lista reciente, inventario, catálogo, ficha pública y vista previa del alta: mostrar la pieza completa tiene prioridad sobre llenar el marco. El componente de foto ofrece mensaje y reintento si falla la carga. El `cover` del vídeo del escáner no es una regla para fotografías de producto.
 
-### Accounting Strip
+Inventario conserva búsqueda y filtros enlazables `Todas`, `Disponibles` y `Vendidas`, con conteos acotados a la búsqueda. Buscar y limpiar conservan el estado seleccionado. Las acciones privadas ocupan un pie separado, con venta primero y luego compartir/QR; las piezas vendidas omiten venta y acceso público. Sus botones tienen al menos 46px. La grilla pública general conserva botones compactos de 42px: no se presenta ese tamaño como mínimo universal de la aplicación.
 
-The ledger is a single bordered strip subdivided by one-pixel rules. Uppercase mono captions sit above large mono values; two columns are used on smaller screens and four on wide screens. It reports business state without becoming a dashboard of raised metric cards.
+### Alta por secciones
+
+Tres fieldsets blancos con leyendas horizontales numeradas en todos los tamaños: `1 Conoce la pieza`, `2 Valor`, `3 Ficha publicable`. No hay bandas verticales de color en escritorio. Fotografía e identidad preceden costo/precio y descripción.
+
+Campos con mínimo de 50px, borde definido, radio suave y halo de menta al foco; textareas de al menos 150px, redimensionables verticalmente. Los errores usan texto asociado y `aria-invalid`; la validación dirige al primer campo inválido. El guardado captura datos y archivo antes de bloquear controles y conserva valores ante error recuperable.
+
+La asistencia de texto/precio sigue siendo opcional, editable y cancelable. Informa si la sugerencia es de IA o local, conserva descripción y precio propios, descarta respuestas desactualizadas y permite guardar sin esperar. El rango orientativo no es una tasación; la ganancia estimada del alta es precio menos costo, sin otros gastos.
+
+### Ventas y estados
+
+Con `producto` en la URL, el formulario y el historial preceden al balance y a la búsqueda; sin selección por URL, balance compacto de tres columnas y búsqueda aparecen antes. No se elimina el balance cuando se llega desde una pieza: se reordena para priorizar la tarea.
+
+La venta mantiene validación, confirmación previa, bloqueo de duplicados, tratamiento explícito de pieza no disponible, recuperación de errores y conflictos concurrentes. El éxito anuncia la venta y la retirada pública. Vacíos distinguen ausencia de piezas, ausencia de coincidencias e historial aún vacío. Inventario conserva placeholder estático anunciado durante carga y error con reintento.
 
 ## Do's and Don'ts
 
 ### Do:
-- **Do** treat each product as one accession record with photograph, written status, price, and `PZ-` identifier.
-- **Do** keep the operational question, dominant intake action, and accounting strip together in the first dashboard viewport.
-- **Do** preserve mobile task context through the fixed bottom navigation and the desktop archive rail.
-- **Do** use numbered archive-blue bands to sequence multi-part cataloging forms.
-- **Do** keep suggestions editable and expose loading, error, empty, and success states in direct Spanish.
+- **Do** usar verde bosque, blanco y menta con controles suaves y superficies redondeadas.
+- **Do** conservar fotografías completas, estados escritos y cifras tabulares.
+- **Do** mantener `Agregar pieza` accesible y legible en blanco sobre verde, incluso activo.
+- **Do** documentar cifras del negocio como acumuladas y piezas recientes como disponibles.
+- **Do** mantener encabezados numerados horizontales en el alta y sugerencias editables.
 
 ### Don't:
-- **Don't** replace records and ledgers with generic rounded SaaS cards or isolated metric tiles.
-- **Don't** use coral as a general-purpose accent; it belongs to intake and visible focus.
-- **Don't** communicate availability, sale, error, or success through color alone.
-- **Don't** add elevation to routine records, form sections, or accounting cells.
-- **Don't** hide the business name, public catalog path, or primary add action when navigation changes across breakpoints.
+- **Don't** recuperar la identidad azul/coral, las bandas verticales, la tipografía de archivo ni las iniciales recortadas.
+- **Don't** cargar Google Fonts o introducir una familia monoespaciada para los importes.
+- **Don't** recortar fotografías de piezas para llenar una composición.
+- **Don't** inventar tendencias, comparativas, métricas comerciales o garantías de IA.
