@@ -13,18 +13,25 @@
 - Evidencia local de la base: 159/159 pruebas, lint, tipos y build aprobados.
   Instalación limpia offline aprobada; online bloqueada localmente por timeout de red.
   Negocios: 12 pruebas y 14 checks de navegador aprobados con SQLite independiente.
-- CI: preparado; pendiente de primera ejecución remota.
+- CI: ejecución real [39905368920](https://github.com/ingjuanlopez4-hub/SegundaSmart/actions/runs/39905368920)
+  aprobada en 55 s para `747da95475b5bf9e98c96142e9b6c8849084f32f`, incluyendo
+  instalación online, generación, lint, tipos, 159 pruebas y build.
 - Issue: https://github.com/ingjuanlopez4-hub/SegundaSmart/issues/1
-- PR y SHA final: pendientes de commit/publicación. Para evitar un SHA
-  autorreferencial, el SHA final se registra en el PR y se obtiene con
-  `git log -1 --format=%H -- .github/workflows/ci.yml`; este archivo identifica la base.
-- Autorrevisión: pendiente del diff final y `git diff --check`; no es aprobación independiente.
+- PR borrador: https://github.com/ingjuanlopez4-hub/SegundaSmart/pull/3.
+  Commit de implementación: `747da95475b5bf9e98c96142e9b6c8849084f32f`.
+  Para evitar un SHA autorreferencial, el HEAD final y su ejecución se registran
+  en el PR; consultar `gh pr view 3 --json headRefOid,statusCheckRollup`.
+- Autorrevisión: diff completo, rutas staged y `git diff --cached --check`
+  aprobados; solo tres archivos esperados, sin secretos ni datos. No es aprobación independiente.
 - Riesgos: instalación necesita registry; el test reinicia solo la base desechable
   del runner. No hay comprobación de formato dedicada ni navegador en CI.
 - Recuperación: revertir el commit exacto que introduzca CI mediante rama y PR;
   ninguna migración, dato, release o despliegue se modifica con este objetivo.
-- Siguiente paso: ejecutar workflow desde PR borrador, registrar resultado real,
-  después formalizar contribución y protección en un cambio separado.
+- Estado: PR abierto, CI de implementación aprobado; aún no integrado.
+- Siguiente paso: comprobar CI del HEAD final tras este registro, después
+  formalizar contribución y protección en un cambio separado.
+- Integración existente: Vercel inicia previews al publicar PR; se observó su
+  check automático. No se ejecutó despliegue manual ni se verificó producción.
 
 ## Investigación funcional pendiente
 

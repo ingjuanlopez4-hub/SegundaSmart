@@ -11,7 +11,7 @@ implica reproducción. No se ejecutaron despliegues ni migraciones remotas.
 | Gobierno inicial | API: protección de `main` inexistente (404), rulesets vacíos, un colaborador con administración; squash ya permitido | Verificado | Configurar controles solo después de CI real; no exigir aprobación imposible |
 | Secretos | Solo `.env.example` y `next-env.d.ts` entre rutas de entorno rastreadas; sin bases/claves rastreadas detectadas por nombre. API: cero alertas de secret scanning; protección de push habilitada | Verificado, alcance limitado | No equivale a auditoría exhaustiva del historial. Ampliar exclusiones de entornos en otro objetivo |
 | Herramientas | Next 15.5.22, React 19.1, TypeScript 5.8.3 estricto, Prisma 6.12, Vitest 3.2.7, ESLint 9; Node 22.22.2 / npm 10.9.7 locales | Verificado | Usar mismas versiones en CI sin actualizar dependencias |
-| Instalación | Único lockfile de dependencias: `package-lock.json`; `npm ci` en worktree limpio tuvo timeout y luego ETIMEDOUT de registry. `npm ci --offline --no-audit --no-fund --foreground-scripts` instaló 438 paquetes desde caché | Verificado con limitación de red | Confirmar instalación online en runner GitHub |
+| Instalación | Único lockfile de dependencias: `package-lock.json`; `npm ci` en worktree limpio tuvo timeout y luego ETIMEDOUT de registry. Instalación offline local: 438 paquetes. Instalación online aprobada en Actions, ejecución `39905368920` | Verificado localmente offline y online en GitHub | Conservar lockfile y comprobar CI en cada PR |
 | Scripts de instalación | Se revisaron manifiesto y efectos observados: Prisma genera cliente/motores, Sharp instala binario, esbuild y resolver preparan binarios | Verificado | No sustituir lockfile ni desactivar scripts necesarios |
 | Persistencia | SQLite local; adaptador libSQL si existe `TURSO_DATABASE_URL`; tres migraciones versionadas, ejecutor local y remoto documentados | Verificado localmente | Turso remoto pendiente; respaldar datos y fotos antes de una migración autorizada |
 | Negocios | Reporte de falla; la documentación previa describe corrección en `c925269` | Reportado | Seguimiento real: [issue #2](https://github.com/ingjuanlopez4-hub/SegundaSmart/issues/2) |
@@ -21,7 +21,12 @@ implica reproducción. No se ejecutaron despliegues ni migraciones remotas.
 | Lint / tipos / build | `npm run lint`, `npm run typecheck`, `npm run build`: exit 0 en base y worktree limpio | Verificado | Ejecutar los mismos scripts en CI |
 | Formato | No existe script ni herramienta de formato dedicada | Verificado, paso ausente | No anunciar verificación de formato; ESLint es el control disponible |
 | CI inicial | API: cero ejecuciones; no existen workflows versionados en la base | Verificado | [Issue #1](https://github.com/ingjuanlopez4-hub/SegundaSmart/issues/1): pipeline mínimo y ejecución real |
+| CI añadido | [Ejecución 39905368920](https://github.com/ingjuanlopez4-hub/SegundaSmart/actions/runs/39905368920), head `747da95475b5bf9e98c96142e9b6c8849084f32f`: todos los pasos aprobados en 55 s | Verificado en GitHub | Comprobar también el HEAD final del [PR #3](https://github.com/ingjuanlopez4-hub/SegundaSmart/pull/3) tras registrar evidencia |
 | Despliegue y proveedores | README describe Vercel/Turso/Blob/OpenAI; configuración local ignorada existente no se copió al worktree ni se imprimió | Documentado; operación remota pendiente | No equiparar compilación local a funcionamiento en producción ni enlaces sociales a integración Meta |
+
+Al publicar el PR, la integración Vercel ya instalada inició automáticamente un
+preview. No se lanzó un comando de despliegue, no se cambiaron sus ajustes y su
+check no se usa como evidencia funcional ni como requisito de CI.
 
 ## Repetir las comprobaciones sin tocar datos existentes
 
