@@ -1,0 +1,25 @@
+name: Mejora dentro del MVP
+description: Proponer un objetivo pequeño y comprobable.
+title: "proposal: "
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problema y evidencia
+      description: Necesidad concreta y evidencia disponible; sin datos personales.
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Alcance y dependencias
+      description: Mantenerse dentro del MVP de AGENTS.md y separar objetivos independientes.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Aceptación, validación y recuperación
+      description: Resultado observable, forma de comprobarlo y cómo recuperar el estado previo.
+    validations:
+      required: true
