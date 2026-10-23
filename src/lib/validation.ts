@@ -5,6 +5,11 @@ const money = z.string().trim().min(1, "Escribe un importe").transform(pesosToCe
   z.number().int().min(0, "El importe no puede ser negativo").max(100_000_000, "El importe es demasiado alto"),
 );
 
+export const businessSchema = z.object({
+  name: z.string().trim().min(2, "Escribe el nombre del negocio").max(100, "Usa como máximo 100 caracteres"),
+  requestKey: z.string().uuid("Solicitud inválida. Recarga e intenta de nuevo."),
+});
+
 export const registerSchema = z.object({
   name: z.string().trim().min(2, "Escribe tu nombre").max(80),
   businessName: z.string().trim().min(2, "Escribe el nombre del negocio").max(100),

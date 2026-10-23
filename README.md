@@ -5,7 +5,7 @@ MVP local para que negocios de artículos de segunda mano administren piezas ún
 ## Funcionalidad
 
 - Registro y acceso con contraseña protegida mediante `scrypt`, sesiones persistentes en cookie `HttpOnly` y cierre de sesión real.
-- Cada cuenta crea un negocio. Todas las consultas privadas y mutaciones se limitan por `businessId` obtenido de la sesión, nunca por datos enviados por el cliente.
+- Cada cuenta crea su primer negocio al registrarse. Desde el nombre del negocio → `Mis negocios` puede crear y abrir otro o volver a uno propio. La propiedad queda persistida por usuario; todas las consultas privadas y mutaciones se limitan por el negocio activo obtenido de la sesión, nunca por datos enviados por el cliente.
 - Inventario de piezas únicas con foto, costo, precio, condición, descripción y estado disponible/vendido.
 - Sugerencia editable de descripción y precio. Usa OpenAI si se configura; ante ausencia, timeout o respuesta inválida usa una sugerencia local determinista.
 - QR descargable que abre la pieza dentro del catálogo público.
@@ -71,12 +71,22 @@ Prisma usa SQLite local cuando no existe `TURSO_DATABASE_URL` y cambia al adapta
 - Las rutas privadas requieren una sesión vigente y derivan el negocio desde ella.
 - No existe una API pública para consultar productos arbitrarios. El catálogo solo selecciona `AVAILABLE` por el `slug` del negocio.
 - Registro y venta usan transacciones. La venta usa una actualización condicional y una restricción única para evitar doble venta.
+- La creación autenticada de negocios guarda negocio, propiedad y selección activa en una transacción. Una clave de solicitud por usuario evita duplicados por doble envío o reintento. La consulta y selección por ID exigen propiedad; el cliente no puede asignar propietarios. Cambiar de negocio actualiza el negocio activo de la cuenta, compartido entre sus sesiones.
 - Formularios aplican restricciones HTML y todas las entradas vuelven a validarse con Zod en el servidor.
 - Cookies con `SameSite=Lax`, `HttpOnly` y `Secure` en producción.
 - Las respuestas externas de IA se validan y, si son inválidas, se ignoran.
 - Las sugerencias locales y sus rangos respetan el máximo de 1,000,000 MXN. El rango siempre contiene el precio sugerido, incluso para importes de centavos. Respuestas IA con descripción vacía, precio no finito o que se redondea a cero activan la alternativa local.
 
 ## Verificación
+
+### Creación autenticada de negocios — 22 de octubre de 2026
+
+- Causa reproducida con SQLite temporal: registro `201` y solicitud autenticada `POST /api/negocios` → `404`; faltaban la ruta y el formulario y solo existía una asociación usuario-negocio.
+- Se añadió `BusinessOwnership` mediante migración aditiva: conserva tablas y datos actuales y registra las asociaciones previas como propiedad. El registro inicial también crea esa relación de forma atómica.
+- Regresiones con SQLite y sesiones reales: creación y propietario, sesión nueva y persistencia, regreso al negocio original, entradas inválidas, sesión ausente/caducada, doble envío concurrente, rollback con fallo forzado y consulta/selección/venta de piezas ajenas rechazadas.
+- Suite completa: **155 pruebas en 14 archivos**, linter, comprobación de tipos y compilación aprobados. Se ejecutó Vitest con una base temporal dedicada en lugar de `npm test`, cuyo script reinicia `prisma/test.db`.
+- Chrome headless contra `next start` y SQLite independiente: **14 comprobaciones** aprobadas; formulario a 360, 390, 768 y 1440 px sin desbordamiento, validación y foco, bloqueo de doble clic, error recuperable con valores conservados, creación real y recarga, regreso al negocio original y cero excepciones JavaScript. El error HTTP temporal se inyectó solo en el navegador de prueba.
+- Evidencia local ignorada por Git: `artifacts/business-browser-qa.json`, `artifacts/business-mobile-390.png` y `artifacts/verify-business-flow.mjs`. Contrato y comandos en [`src/lib/business.md`](src/lib/business.md). Turso remoto y dispositivos físicos no verificados.
 
 ### Rediseño UI/UX — 21 de octubre de 2026
 

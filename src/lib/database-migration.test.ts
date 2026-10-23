@@ -32,6 +32,35 @@ const products = async () => (await client.execute("SELECT * FROM Product ORDER 
 const sales = async () => (await client.execute("SELECT * FROM Sale ORDER BY id")).rows;
 
 describe("migraciones atómicas en SQLite temporal", () => {
+  it.each([false, true])("añade propiedad conservando los datos existentes (referencias migradas=%s)", async (upgraded) => {
+    await legacyFixture();
+    await client.execute("INSERT INTO User (id,email,name,passwordHash,businessId) VALUES ('u','qa@example.test','QA','hash','b')");
+    await client.execute("INSERT INTO Session (id,tokenHash,userId,expiresAt) VALUES ('s','token','u','2099-01-01')");
+    if (upgraded) await client.executeMultiple(await readFile(new URL("../../prisma/migrations/20260730010000_product_reference_defects/migration.sql", import.meta.url), "utf8"));
+    const users = (await client.execute("SELECT * FROM User")).rows;
+    const businesses = (await client.execute("SELECT * FROM Business")).rows;
+    const sessions = (await client.execute("SELECT * FROM Session")).rows;
+    await migrateWithClient(client);
+    expect((await client.execute("SELECT * FROM BusinessOwnership")).rows).toEqual([{ userId: "u", businessId: "b", requestKey: null }]);
+    expect((await client.execute("SELECT * FROM User")).rows).toEqual(users);
+    expect((await client.execute("SELECT * FROM Business")).rows).toEqual(businesses);
+    expect((await client.execute("SELECT * FROM Session")).rows).toEqual(sessions);
+    expect(await migrateWithClient(client)).toEqual({ changed: false });
+  });
+
+  it("revierte la migración de propiedad completa si falla el backfill y permite reintento", async () => {
+    await legacyFixture();
+    const before = await schema();
+    await expect(migrateWithClient({
+      execute: client.execute.bind(client),
+      executeMultiple: (sql) => client.executeMultiple(sql.replace('SELECT "id", "businessId" FROM "User";', 'SELECT "id", "businessId" FROM "User"; SELECT * FROM forced_ownership_failure;')),
+    })).rejects.toThrow(/forced_ownership_failure/);
+    expect(await schema()).toEqual(before);
+    expect(await sales()).toHaveLength(1);
+    await migrateWithClient(client);
+    expect(await migrateWithClient(client)).toEqual({ changed: false });
+  });
+
   it("revierte también la creación inicial completa si falla antes de confirmar", async () => {
     await expect(migrateWithClient({
       execute: client.execute.bind(client),

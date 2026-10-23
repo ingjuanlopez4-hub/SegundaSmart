@@ -32,14 +32,19 @@ function definitions(sql, type) {
 export async function migrateWithClient(client) {
   const initial = await readFile(new URL("../prisma/migrations/20260730000000_init/migration.sql", import.meta.url), "utf8");
   const upgrade = await readFile(new URL("../prisma/migrations/20260730010000_product_reference_defects/migration.sql", import.meta.url), "utf8");
+  const ownership = await readFile(new URL("../prisma/migrations/20261022000000_business_ownership/migration.sql", import.meta.url), "utf8");
   const oldTables = definitions(initial, "table");
   const tables = new Map(oldTables);
   tables.set("Product", definitions(upgrade, "table").get("new_Product").replace('"new_Product"', '"Product"'));
-  const indexes = new Map([...definitions(initial, "index"), ...definitions(upgrade, "index")]);
+  const indexes = new Map([...definitions(initial, "index"), ...definitions(upgrade, "index"), ...definitions(ownership, "index")]);
   const snapshot = (await client.execute(schemaQuery)).rows;
   const actualTables = new Map(snapshot.filter((r) => r.type === "table").map((r) => [r.name, r.sql]));
   const empty = snapshot.length === 0;
   const legacy = !empty && canonical(actualTables.get("Product") ?? "") === canonical(oldTables.get("Product"));
+  if (actualTables.has("BusinessOwnership")) {
+    const definition = definitions(ownership, "table").get("BusinessOwnership");
+    if (canonical(actualTables.get("BusinessOwnership")) !== canonical(definition)) throw new Error("Esquema incompatible en BusinessOwnership; requiere revisión.");
+  }
 
   if (!empty) {
     if (actualTables.has("new_Product")) throw new Error("Esquema parcial: existe new_Product; requiere recuperación desde respaldo.");
@@ -53,6 +58,7 @@ export async function migrateWithClient(client) {
   const changes = [];
   if (empty) changes.push(...statements(initial));
   if (empty || legacy) changes.push(...statements(upgrade).filter((s) => !/^PRAGMA /i.test(s)));
+  if (!actualTables.has("BusinessOwnership")) changes.push(...statements(ownership));
   // Missing indexes are recoverable. Existing names with different constraints
   // must not be silently accepted (nor dropped automatically).
   for (const [name, sql] of indexes) {

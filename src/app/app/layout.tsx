@@ -11,12 +11,12 @@ export default async function AppLayout({ children }: { children: React.ReactNod
     <div className="app-shell">
       <aside className="app-rail">
         <Brand />
-        <div className="business-stamp"><span>Mi negocio</span><strong title={user.business.name}>{user.business.name}</strong></div>
+        <div className="business-stamp"><Link href="/app/negocios">Mis negocios</Link><strong title={user.business.name}>{user.business.name}</strong></div>
         <AppNavigation />
         <div className="rail-footer"><span className="rail-caption">Tu escaparate digital</span><Link href={`/catalogo/${user.business.slug}`} target="_blank">Ver catálogo público <span aria-hidden="true">↗</span></Link><LogoutButton /></div>
       </aside>
       <div className="app-stage">
-        <header className="app-header"><Brand /><span className="business-name" title={user.business.name}>{user.business.name}</span><div className="header-actions"><Link href={`/catalogo/${user.business.slug}`} target="_blank">Catálogo <span aria-hidden="true">↗</span></Link><LogoutButton /></div></header>
+        <header className="app-header"><Brand /><Link className="business-name" href="/app/negocios" title={user.business.name}>{user.business.name}</Link><div className="header-actions"><Link href={`/catalogo/${user.business.slug}`} target="_blank">Catálogo <span aria-hidden="true">↗</span></Link><LogoutButton /></div></header>
         {children}
       </div>
     </div>

@@ -13,6 +13,7 @@ model Business {
   name      String
   slug      String    @unique
   users     User[]
+  owners    BusinessOwnership[]
   products  Product[]
   sales     Sale[]
   createdAt DateTime  @default(now())
@@ -26,8 +27,21 @@ model User {
   businessId   String
   business     Business  @relation(fields: [businessId], references: [id], onDelete: Cascade)
   sessions     Session[]
+  ownedBusinesses BusinessOwnership[]
   createdAt    DateTime  @default(now())
 
+  @@index([businessId])
+}
+
+model BusinessOwnership {
+  userId     String
+  businessId String
+  requestKey String?
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  business   Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+
+  @@id([userId, businessId])
+  @@unique([userId, requestKey])
   @@index([businessId])
 }
 
