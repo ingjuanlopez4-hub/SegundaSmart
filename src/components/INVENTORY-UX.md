@@ -12,6 +12,12 @@ Estas son observaciones del código. No se atribuyen tasas de abandono ni result
 
 ## Contratos y decisiones
 
+### Actualización de rendimiento — octubre de 2026
+
+El listado privado ahora está paginado a 24 fichas mediante `pagina`. Los conteos de los filtros abarcan toda la búsqueda y la cabecera conserva el total registrado; no se calculan a partir de la página visible. Búsqueda, escáner, limpieza y cambios de estado reinician la página. Anterior/Siguiente conservan búsqueda/estado y usan GET nativo, igual que los filtros, evitando reutilizar respuestas RSC anteriores. El orden desempata por ID cuando coincide la fecha. No hay caché de disponibilidad ni cambios en ventas. La observación histórica de falta de paginación al final de este documento queda sustituida por esta actualización.
+
+Evidencia: siete repeticiones HTTP y cinco de navegador por pantalla y lote, línea base y dos lotes finales independientes; 159 pruebas aprobadas, navegación de página/filtro y reflujo a 360/390/768/1440 px verificados. Condiciones, cifras, limitaciones y comandos en [`scripts/performance-local.md`](../../scripts/performance-local.md).
+
 - `q` sigue normalizado con `normalizeProductQuery` y consultado mediante `productSearchWhere`, siempre dentro del negocio autenticado. No se amplían APIs ni se exponen costos.
 - `estado=disponibles|vendidas`; ausencia/valor desconocido equivale a `todas`. Repetidos: se usa el primero. `inventoryHref` codifica la consulta y conserva solo los parámetros reconocidos.
 - Los conteos corresponden a la consulta actual, no a supuestas métricas globales. Se mantiene la cantidad total registrada en la cabecera.
