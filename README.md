@@ -34,10 +34,11 @@ MVP local para que negocios de artículos de segunda mano administren piezas ún
 
 ## Requisitos y arranque
 
-- Node.js 20.9 o posterior.
+- Node.js 20.9 o posterior; versión comprobada en CI: **22.22.2**, npm **10.9.7**.
+- Instalación reproducible con `package-lock.json` y `npm ci`.
 
 ```bash
-npm install
+npm ci
 cp .env.example .env
 npm run db:push
 npm run dev
@@ -79,6 +80,27 @@ Prisma usa SQLite local cuando no existe `TURSO_DATABASE_URL` y cambia al adapta
 - Las sugerencias locales y sus rangos respetan el máximo de 1,000,000 MXN. El rango siempre contiene el precio sugerido, incluso para importes de centavos. Respuestas IA con descripción vacía, precio no finito o que se redondea a cero activan la alternativa local.
 
 ## Verificación
+
+### Proceso de ingeniería
+
+- [Línea base y evidencia](docs/engineering/BASELINE.md), [continuidad](docs/engineering/LOOP_STATE.md)
+  y [producto verificado](docs/PRODUCTO_VERIFICADO.md).
+- [Contribución](CONTRIBUTING.md): rama corta por objetivo, PR borrador y validación.
+- [Seguridad](SECURITY.md) y [recuperación/versiones](docs/engineering/RECOVERY.md).
+- CI comprueba instalación bloqueada por lockfile, generación Prisma, ESLint,
+  TypeScript, tests y build en PR y push a `main`. No hay formateador dedicado
+  ni pruebas de navegador en el pipeline. Estado por SHA en el PR, no inferido
+  del resultado de otra revisión.
+- Validación actual: **159 pruebas en 15 archivos**, lint, tipos y build aprobados
+  localmente y en GitHub. Creación de negocios: 12 pruebas y 14 comprobaciones de
+  navegador local aprobadas; el reporte de falla sigue [en investigación](https://github.com/ingjuanlopez4-hub/SegundaSmart/issues/2)
+  para el entorno afectado. No se ha verificado Turso ni producción en este ciclo.
+- `npm test` **reinicia `prisma/test.db`**. Ejecutarlo en un checkout desechable,
+  sin entornos reales; para otra ruta temporal, ver `src/lib/business.md`.
+
+Estos documentos se proponen en un PR dependiente del PR de CI; el estado de
+integración está en `LOOP_STATE.md`. La protección remota de `main` y el canal
+privado de seguridad sí se verificaron por API, independientemente del merge.
 
 ### Creación autenticada de negocios — 22 de octubre de 2026
 

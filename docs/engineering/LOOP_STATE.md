@@ -27,11 +27,50 @@
   del runner. No hay comprobación de formato dedicada ni navegador en CI.
 - Recuperación: revertir el commit exacto que introduzca CI mediante rama y PR;
   ninguna migración, dato, release o despliegue se modifica con este objetivo.
-- Estado: PR abierto, CI de implementación aprobado; aún no integrado.
-- Siguiente paso: comprobar CI del HEAD final tras este registro, después
-  formalizar contribución y protección en un cambio separado.
+- Estado: PR abierto, CI del HEAD final `12b946ee301efe156766364770fcac5333256d2a`
+  aprobado: [39905585747](https://github.com/ingjuanlopez4-hub/SegundaSmart/actions/runs/39905585747).
+  Ciclo de propuesta completado; aún no integrado.
+- Siguiente paso: revisión del propietario e integración autorizada de #3;
+  contribución y protección continúan en el objetivo 2 separado.
 - Integración existente: Vercel inicia previews al publicar PR; se observó su
   check automático. No se ejecutó despliegue manual ni se verificó producción.
+
+## Objetivo 2 — Contribución y recuperación trazables
+
+- Problema: faltan contrato de contribución, plantillas y guía de recuperación.
+- Issue: https://github.com/ingjuanlopez4-hub/SegundaSmart/issues/4.
+- Rama `docs/contributing`, base `12b946ee301efe156766364770fcac5333256d2a`.
+  Worktree `/tmp/opencode/ss-engineering-docs`. Depende de #3 porque extiende el
+  registro de ingeniería y usa su workflow; PR dirigido a `ci/quality-checks`
+  para presentar solamente el incremento. Retarget a `main` y nueva validación
+  después de integrar #3; no se hará merge automáticamente.
+- Archivos esperados: `CONTRIBUTING.md`, `SECURITY.md`, `README.md`, `.gitignore`,
+  plantillas PR/issues, `.github/dependabot.yml`, `docs/PRODUCTO_VERIFICADO.md`,
+  `docs/engineering/{BASELINE,LOOP_STATE,GITHUB_CONTROLS,RECOVERY}.md` y
+  `docs/engineering/main-protection.json`. Sin cambios de aplicación o dependencias.
+- Aceptación: comandos/rutas contrastados, documentación de evidencia y límites,
+  exclusiones verificadas, configuración remota consultada y CI final aprobado.
+- Remoto aplicado: protección de `main` y reporte privado de seguridad; lectura
+  posterior aprobada. Un único colaborador, 0 aprobaciones externas obligatorias;
+  squash ya habilitado, no se modificaron métodos de merge. No funciones de pago.
+- Recuperación ensayada: `git revert --no-commit 747da95475b5bf9e98c96142e9b6c8849084f32f`
+  en worktree detached desechable. Diff contra `e7b9cef` vacío (exit 0), sin
+  publicación. No es ensayo de recuperación de datos o producción.
+- Validación local del incremento: instalación limpia offline, generación Prisma,
+  lint, tipos, 159/159 pruebas y build aprobados. YAML de workflow, Dependabot y
+  formularios válido; JSON de protección válido. 16 enlaces locales contrastados.
+  Seis rutas sintéticas de entornos/bases ignoradas y `.env.example` no ignorado.
+- Autorrevisión: rutas, manejo de secretos y distinción entre controles aplicados
+  y archivos preparados revisados; `git diff --check` aprobado. No es revisión independiente.
+- PR y CI remoto: pendientes de publicación; SHA final y ejecución se registrarán
+  en el PR para evitar referencia autorreferencial. Estado: preparado localmente.
+- Riesgos: CI aún no está en `main`; integrar primero #3. Dependabot y plantillas
+  están preparados, no activos en la rama predeterminada hasta integrar el cambio.
+  La configuración remota sí se aplicó, no depende de fusionar los documentos.
+- Recuperación: revertir SHA integrado mediante PR; no borrar protecciones como
+  limpieza rutinaria. Un rollback de código no revierte configuración GitHub.
+- Siguiente paso: publicar PR borrador dependiente, ejecutar CI y registrar
+  evidencia del HEAD final; revisión del propietario antes de integrar.
 
 ## Investigación funcional pendiente
 
