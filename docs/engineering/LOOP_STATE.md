@@ -62,15 +62,21 @@
   Seis rutas sintéticas de entornos/bases ignoradas y `.env.example` no ignorado.
 - Autorrevisión: rutas, manejo de secretos y distinción entre controles aplicados
   y archivos preparados revisados; `git diff --check` aprobado. No es revisión independiente.
-- PR y CI remoto: pendientes de publicación; SHA final y ejecución se registrarán
-  en el PR para evitar referencia autorreferencial. Estado: preparado localmente.
+- PR borrador: https://github.com/ingjuanlopez4-hub/SegundaSmart/pull/5.
+  CI de implementación `549eb4be5eff2bd0125b09413b0b044e866bc48d` aprobado:
+  [39906407665](https://github.com/ingjuanlopez4-hub/SegundaSmart/actions/runs/39906407665).
+  Incluye instalación online, Prisma, lint, tipos, 159 pruebas y build.
+  El SHA y ejecución del HEAD final tras este registro se guardan en el PR;
+  consultar `gh pr view 5 --json headRefOid,statusCheckRollup`.
+  Estado: PR abierto con CI de implementación aprobado, no integrado.
 - Riesgos: CI aún no está en `main`; integrar primero #3. Dependabot y plantillas
   están preparados, no activos en la rama predeterminada hasta integrar el cambio.
   La configuración remota sí se aplicó, no depende de fusionar los documentos.
 - Recuperación: revertir SHA integrado mediante PR; no borrar protecciones como
   limpieza rutinaria. Un rollback de código no revierte configuración GitHub.
-- Siguiente paso: publicar PR borrador dependiente, ejecutar CI y registrar
-  evidencia del HEAD final; revisión del propietario antes de integrar.
+- Siguiente paso: comprobar CI del HEAD final tras este registro; luego revisión
+  del propietario, integración autorizada de #3, retarget de #5 a `main` y nueva
+  comprobación. La investigación #2 requiere evidencia del entorno afectado.
 
 ## Investigación funcional pendiente
 
