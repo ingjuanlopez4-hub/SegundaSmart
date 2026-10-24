@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">SegundaSmart Prueba</string>
+    <string name="title_activity_main">SegundaSmart Prueba</string>
+    <string name="package_name">com.segundasmart.poc</string>
+    <string name="custom_url_scheme">com.segundasmart.poc</string>
+</resources>

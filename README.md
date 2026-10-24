@@ -27,6 +27,7 @@ MVP local para que negocios de artículos de segunda mano administren piezas ún
 
 ## Documentación de producto
 
+- [`mobile/android-poc/README.md`](mobile/android-poc/README.md): experimento Android aislado, comparación de arquitectura, MVP y estado de validación. No constituye aún una versión Android verificada.
 - [`PRODUCT.md`](PRODUCT.md): usuarios, posicionamiento, principios y límites del producto.
 - [`DESIGN.md`](DESIGN.md): sistema visual y reglas de interacción responsive.
 - [`COMPETITIVE_ANALYSIS.md`](COMPETITIVE_ANALYSIS.md): competidores, benchmarks UX y mapa de oportunidades con fuentes oficiales.
@@ -61,7 +62,7 @@ Abre [http://localhost:3000](http://localhost:3000), crea una cuenta y registra 
 
 ## Persistencia local y serverless
 
-Las fotos se validan en backend con decodificación completa mediante Sharp: JPEG, PNG o WebP estático, MIME coincidente, máximo 5 MB, 8192 píxeles por lado y 16.777.216 píxeles totales. Se rechazan imágenes truncadas, corruptas y animaciones, incluido APNG. En desarrollo se guardan en `public/uploads/<businessId>`; cuando existe `BLOB_READ_WRITE_TOKEN`, se guardan en Vercel Blob y `photoPath` conserva la URL pública.
+Las fotos se validan en backend con decodificación completa mediante Sharp: JPEG, PNG o WebP estático, MIME coincidente, máximo **5.242.880 bytes (5 MiB)**, 8192 píxeles por lado y 16.777.216 píxeles totales. Se rechazan imágenes truncadas, corruptas y animaciones, incluido APNG. El formulario prepara imágenes de hasta 32 MiB en un worker: aplica orientación EXIF, limita el lado de salida a 2048, elimina metadatos originales y envía JPEG de hasta 4 MiB. Cancelar el selector o fallar una sustitución conserva la fotografía anterior y el formulario. Contrato y limitaciones en [`src/lib/photo-client.md`](src/lib/photo-client.md). En desarrollo se guardan en `public/uploads/<businessId>`; cuando existe `BLOB_READ_WRITE_TOKEN`, se guardan en Vercel Blob y `photoPath` conserva la URL pública.
 
 La ruta `/uploads/[businessId]/[filename]` sirve las fotos locales creadas después de iniciar el servidor de producción (`next start`), sin requerir reinicios. Solo admite identificadores de negocio y nombres UUID con extensión JPG, PNG o WebP generados por la aplicación; las fotos conservan su acceso público para el catálogo.
 

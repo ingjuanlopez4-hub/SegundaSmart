@@ -1,0 +1,6 @@
+node_modules/
+capacitor.config.json
+www/connection-error.html
+*.jks
+*.keystore
+local.properties
