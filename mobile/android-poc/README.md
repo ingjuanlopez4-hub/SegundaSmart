@@ -1,9 +1,135 @@
-# Prueba Android de SegundaSmart — ciclos 1 y 2
+# Prueba Android de SegundaSmart — diagnóstico y ciclos anteriores
 
-Estado actual: **PARCIAL/BLOQUEADO: APK debug construido, instalado y abierto en
-emulador; HTTPS de pruebas y recorrido funcional Android pendientes**.
+Estado actual: **BLOQUEADO POR CONFIGURACIÓN: falta desplegar el HTTPS público de
+pruebas autorizado. El AVD existente ya está arrancado y visible por adb**.
 Es un experimento debug aislado.
 Base inspeccionada: `e7b9cef`. Trabajo iniciado el 23/10/2026; logs UTC del 24/10.
+
+## Preparación de entorno posterior — 24/10/2026
+
+Se localizó `SegundaSmart_API36` en `artifacts/android-cycle2/avd` y se arrancó
+sin borrar datos. `adb devices -l` confirma `emulator-5556 device`;
+`sys.boot_completed=1`, Android 16/API 36 y paquete previo instalado. El AVD queda
+encendido. No se reinstaló ni abrió el APK de origen de ejemplo.
+
+HTTPS local aislado disponible en `https://localhost:3443`, con certificado
+autofirmado solo para el host; no es aún el origen confiable para Android.
+La propuesta Vercel + Turso + Blob nuevos, variables, autorización externa y
+evidencia actual están en [`scripts/staging.md`](../../scripts/staging.md).
+Suite web SQLite: 165/165; política Android: 2/2; build web, lint, tipos y smoke
+HTTPS local aprobados. Recorrido A–J, nuevo APK, TLS público y proveedores remotos:
+**NO EJECUTADOS**. Los diagnósticos inferiores son históricos y su lista adb vacía
+describe el momento anterior a este arranque.
+
+## Diagnóstico de continuación — 24/10/2026
+
+Checkout inspeccionado: `b707483`. Se leyeron `AGENTS.md`, este documento,
+configuración/scripts de Capacitor, manifiesto y política nativa de navegación.
+Los cambios preexistentes `.opencode/README.md` y
+`.opencode/agents/ss-ingeniero.md` se conservaron. Este diagnóstico solo modifica
+este README; los resultados de ciclos anteriores siguen siendo históricos.
+
+### Causa y punto exacto de configuración
+
+- Arquitectura real: **Capacitor 8.5.3 / WebView con Next.js SSR remoto**;
+  no TWA ni backend empaquetado. El origen es el del **frontend** y sus Route
+  Handlers `/api`, no una URL de API independiente. `APP_URL` configura los QR,
+  no el destino del contenedor Android.
+- Fuente única: variable de proceso `ANDROID_POC_ORIGIN` → `configure.mjs:4`
+  → validación `config.mjs` → `capacitor.config.json` → `cap sync android`
+  → `android/app/src/main/assets/capacitor.config.json`
+  → `assets/capacitor.config.json` dentro del APK. Los archivos generados están
+  ignorados: editar uno manualmente no configura reproduciblemente el APK.
+- La variable no está definida en esta sesión ni en `.env`/`.env.local`.
+  `.env` y `.env.example` solo indican `APP_URL=http://localhost:3000`;
+  `.env.local` no define `APP_URL`. No se imprimieron credenciales de esos archivos.
+  La documentación no identifica ningún HTTPS autorizado: señala expresamente
+  que falta. `https://qa.example.test` está documentado como ejemplo.
+- La configuración generada raíz, la copia nativa y el **contenido del APK local**
+  coinciden: `server.url=https://qa.example.test`, inicio `/login`.
+  Esto confirma configuración incorrecta para el objetivo; no demuestra un
+  fallo DNS/TLS concreto ni el contenido actualmente instalado en un emulador.
+- Se conservan HTTPS obligatorio, contenido mixto desactivado, navegación por
+  esquema/host/puerto en `MainActivity`, cookies web y permiso INTERNET únicamente
+  en el manifiesto fuente. Release está deshabilitado; no hay flavors declarados.
+  No se modificó TLS, navegación, permisos ni autenticación.
+
+### Evidencia reproducible de esta inspección
+
+Desde la raíz, SDK previamente instalado:
+
+```bash
+git status --short
+/tmp/opencode/android-sdk/platform-tools/adb devices -l
+/tmp/opencode/android-sdk/platform-tools/adb shell pm path com.segundasmart.poc
+/tmp/opencode/android-sdk/platform-tools/adb shell dumpsys activity activities
+python3 -c 'import zipfile,json; z=zipfile.ZipFile("mobile/android-poc/android/app/build/outputs/apk/debug/app-debug.apk"); print(json.loads(z.read("assets/capacitor.config.json"))["server"])'
+sha256sum mobile/android-poc/android/app/build/outputs/apk/debug/app-debug.apk
+```
+
+Observado: `adb devices -l` termina en 0 con lista vacía; las otras dos órdenes
+adb terminan en 1 con `adb: no devices/emulators found`. No se puede confirmar
+paquete instalado, actividad actual, API ni pantalla en esta sesión. La inspección
+de procesos no muestra emulador/QEMU y `ss -ltnp` muestra adb en 5037, sin listener
+5556. No se arrancó, reinició ni borró ningún emulador. El lanzamiento `Status: ok`
+y la captura del ciclo 2 no se reutilizan como aprobación actual.
+
+APK **preexistente**, no reconstruido en este diagnóstico:
+`mobile/android-poc/android/app/build/outputs/apk/debug/app-debug.apk`,
+4.120.159 bytes; SHA-256
+`5e8d2de4de55d64db265b81055f5f568c519584fc3c32e15f569fd0c931e71ca`.
+La lectura del ZIP confirma el origen de ejemplo. No se reinstaló ni relanzó.
+
+### Matriz del recorrido solicitado (esta inspección)
+
+| Caso | Estado | Evidencia / dependencia |
+| --- | --- | --- |
+| A. Acceso desde HTTPS correcto | NO EJECUTADO | Falta origen autorizado; no hay destino adb. |
+| B. Inicio de sesión y pantalla principal | NO EJECUTADO | Depende de A y acceso de pruebas aprobado. |
+| C. Inventario/listado | NO EJECUTADO | Depende de B. |
+| D. Crear y consultar producto de prueba | NO EJECUTADO | Depende de B y datos/alcance de pruebas autorizados. |
+| E. Selector de imágenes y cancelación | NO EJECUTADO | Falta formulario remoto en Android. |
+| F. Cámara y permisos | NO EJECUTADO | Falta formulario remoto y dispositivo operativo. |
+| G. Atrás, teclado y formularios | NO EJECUTADO | Falta recorrido remoto en Android. |
+| H. Segundo plano y regreso | NO EJECUTADO | No hay dispositivo adb para verificar estado válido. |
+| I. Pérdida de red, recuperación y reintento | NO EJECUTADO | No hay conexión de pruebas inicial ni dispositivo. |
+| J. Logout y protección ante Atrás/recarga | NO EJECUTADO | Falta sesión Android de pruebas. |
+
+Ningún caso funcional aprobado ni fallido en esta inspección: todos bloqueados
+antes de ejecutarse. No se realizaron escrituras, ventas ni publicaciones.
+DNS, TLS/cadena, redirecciones, HTTP, JS, autenticación, backend y logcat del destino
+quedan **NO EJECUTADOS** hasta recibir el origen y disponer de emulador visible.
+No procede atribuirlo a CORS: el diseño actual comparte origen para web y API.
+El límite backend de fotografías sigue siendo 5.242.880 bytes (5 MiB); no se
+reprodujo un fallo de tamaño en Android ni se trata como fallo de conexión.
+
+### Continuación y reversión
+
+Solicitar **únicamente la URL HTTPS del frontend de pruebas autorizado**.
+Si requiere autenticación de entorno, indicar el mecanismo aprobado para acceder
+a la cuenta de pruebas, sin enviar contraseñas/tokens en el chat. No se deduce
+autorización de una URL de producción, un proveedor de datos o una variable de QR.
+
+Una vez disponible, definir `ANDROID_POC_ORIGIN` en la terminal (origen sin ruta,
+credenciales, consulta ni fragmento) y seguir los comandos de reproducción del
+ciclo 2: `npm run android:sync`, diagnóstico, wrapper con JDK 21/SDK 36,
+lint/unit tests/assembleDebug, inspección del origen dentro del nuevo APK e
+instalación `adb install -r` sobre un serial observado. Antes, comprobar DNS,
+certificado y redirects en host **y emulador**; redirects de documentos deben
+permanecer en el mismo origen permitido. No sustituir el hostname TLS por la IP
+del host. Completar después A–J con evidencia Android y cuenta/datos aprobados.
+
+`npm test` en `mobile/android-poc` aprobó **2/2** pruebas de política de
+configuración (no prueban acceso remoto). No se ejecutó sync, compilación, lint
+nativo ni instalación: falta la configuración necesaria y reconstruir el mismo
+origen de ejemplo no resuelve ese bloqueo externo. No hubo cambios ejecutables
+que requieran una nueva regresión web. La validación actual no sustituye la
+compilación/lint/pruebas ni el flujo móvil exigidos para cerrar la tarea.
+
+Reversión de este diagnóstico: retirar solo este apartado y restaurar el título
+y estado iniciales del README tras revisar cambios posteriores. No hay cambios de
+configuración, código, datos, APK ni instalación que revertir. Conservar los
+archivos y evidencias de los ciclos anteriores y los cambios de usuario.
 
 ## Ciclo 2 — ejecución y evidencia
 

@@ -15,3 +15,4 @@ artifacts/
 .impeccable/questions/
 .vercel/
 .env.local
+.env.staging.local

@@ -160,6 +160,11 @@ El informe local detallado está en `artifacts/qa-improvements.md` (directorio i
 
 ## Operación
 
+Para preparar HTTPS local aislado y desplegar un servidor exclusivo de pruebas,
+consulta [`scripts/staging.md`](scripts/staging.md). Incluye recursos, variables,
+autorización externa pendiente y resultados actuales de adb; no requiere usar las
+credenciales ni la vinculación Vercel existentes.
+
 `npm run db:push` crea o actualiza de forma idempotente la base SQLite local usando las migraciones versionadas. `npm run db:init:turso` aplica el mismo flujo a Turso. La migración de referencias reconstruye `Product`, conserva filas existentes y las rellena con una referencia derivada de su ID; las altas nuevas reciben referencias aleatorias desde el backend.
 
 El ejecutor aplica los cambios dentro de una transacción, comprueba las definiciones de tablas e índices y verifica las claves foráneas antes de confirmar. Los índices ausentes se reconstruyen; esquemas parciales o incompatibles se rechazan sin borrar sus datos. La atomicidad, rollback y reintento se prueban con SQLite local; la secuencia contra Turso remoto requiere comprobación independiente. Antes de migrar datos reales, conserva respaldos de la base y del almacén Blob y usa una ventana de mantenimiento sin escrituras concurrentes. Contrato y límites en [`scripts/database-migration.md`](scripts/database-migration.md).
